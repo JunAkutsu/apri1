@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.apri.sample.TantousyaMapper">
+    <select id="selectAll" resultType="com.apri.sample.SelectTantousyaContent">
+        SELECT tantousya_renban,
+               tantousya_id,
+               simei 
+          FROM tantousya
+    </select>
+    
+    <insert id="insert" parameterType="com.apri.sample.SelectTantousyaContent">
+        INSERT INTO TANTOUSYA (tantousya_renban,tantousya_id,simei) 
+        VALUES (#{tantousya_renban},#{tantousya_id},#{simei})
+    </insert>
+</mapper>

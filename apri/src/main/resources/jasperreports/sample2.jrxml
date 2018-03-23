@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sample2" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="62a5a4e6-33be-4a43-b3bf-b4f74e9cb144">
+	<parameter name="test1" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="tantousya_renban" class="java.lang.Long"/>
+	<field name="tantousya_id" class="java.lang.String"/>
+	<field name="simei" class="java.lang.String"/>
+	<variable name="sum_tantousya_renban" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{tantousya_renban}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="265" y="35" width="100" height="30" uuid="5a77e8d6-564f-407a-98e6-c272796e8441"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="ipaexg"/>
+				</textElement>
+				<text><![CDATA[担当者一覧]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="60" y="32" width="100" height="30" uuid="d940e8e7-83af-4b8e-b4e8-7951fd1a827c"/>
+				<textElement>
+					<font fontName="ipaexg"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{test1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="185" height="30" uuid="b92ad6ba-be9e-4d2e-b24d-a08900905aa3">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="419bafeb-359c-4a98-a843-3fdf0ee21c7b"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="ipaexg"/>
+				</textElement>
+				<text><![CDATA[担当者連番]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="185" y="0" width="185" height="30" uuid="909bc8df-1aa4-48c1-b7c2-d33409131761">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="00f88f50-7463-41a6-a3a5-a94873edc6dd"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="ipaexg"/>
+				</textElement>
+				<text><![CDATA[担当者ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="0" width="185" height="30" uuid="0ca7d5d1-3c89-480e-ab43-aa17685bfcd7">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="32883453-395d-4c68-8250-98b274d1e06e"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="ipaexg"/>
+				</textElement>
+				<text><![CDATA[氏名]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="31" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="185" height="30" uuid="21822c07-e693-401f-8ac9-e0c4fd5b1cd8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="419bafeb-359c-4a98-a843-3fdf0ee21c7b"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="ipaexg"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tantousya_renban}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="185" y="0" width="185" height="30" uuid="ce5ee7fb-afd7-43a7-b110-9ea40b4c7a03">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="00f88f50-7463-41a6-a3a5-a94873edc6dd"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="ipaexg"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tantousya_id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="370" y="0" width="185" height="30" uuid="f02b9c93-a738-49ee-be7a-45ee43dbea4c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="32883453-395d-4c68-8250-98b274d1e06e"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="ipaexg"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{simei}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="42" splitType="Stretch">
+			<textField>
+				<reportElement x="70" y="0" width="115" height="30" uuid="d102003d-d010-4f15-b10c-37a9eb187c05"/>
+				<textElement>
+					<font fontName="ipaexg"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_tantousya_renban}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

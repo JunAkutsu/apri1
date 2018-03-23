@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.thymleaf.org">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bootstrapの基本テンプレート</title>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-1/css/bootstrap.min.css}" />
+  </head>
+  <body>
+	<h1>strap</h1>
+	<p class="bg-primary">この段落に適用しましょう。</p>
+    <div id="search_message"></div>
+	
+	<form id="form" method="POST" action="">
+	  <input id="a1" type="text" name="a1" value="">
+	</form>
+	<div class="controller container">
+	  <button class="btn btn-primary" id="btn_commit">送信</button>
+	</div>
+	<script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/4.0.0-1/js/bootstrap.min.js}"></script>
+	<script>
+		$(function(){
+			$('button').on('click',function(){
+					var v_a1 = $("#form input#a1").val();
+					var v_a1_json={'v_a1':v_a1};
+					alert(v_a1);
+					$.ajax({
+						  type: "POST",
+		 				  url:'/ajax/json',
+		 				 contentType: "application/json;charset=UTF-8",
+						  data:JSON.stringify(v_a1_json),
+						  dataType: "json"
+					}).done(function (data) {
+						var v_message =  "<div>input_vale="+data.input_value+":tantousya_renban="+data.tantousya_renban+":tantousya_mei="+data.tantousya_mei+":tantousya_age="+data.tantousya_age+"</div>"
+//						var v_message =  "<div><table><tr><th>tantousya_renban</th><td>"+data.tantousya_renban+"</td></tr></table>"
+						$("#search_message").append(v_message);
+						alert(data.tantousya_renban);
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+						// エラーメッセージの取得
+						var v_message = "<div>" + jqXHR.responseText + "</div>";
+						// エラーメッセージの設定
+						$("#search_message").append(v_message);
+					});
+				});
+			});
+	</script>
+	
+  </body>
+</html>

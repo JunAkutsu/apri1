@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymleaf.org">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+<title>Insert title here</title>
+</head>
+<body>
+  <h4>tantousya Insart</h4>
+ <form method="POST" action="/sample3/tantousya/insert" th:object="${formModel}">
+ <table>
+   <tr>
+     <td>担当者連番</td>
+     <td><input type="text" name="tantousya_renban" th="*{tantousya_renban}" /></td>
+   </tr>
+   <tr>
+     <td>担当者ID</td>
+     <td><input type="text" name="tantousya_id" th="*{tantousya_id}" /></td>
+   </tr>
+   <tr>
+     <td>氏名</td>
+     <td><input type="text" name="simei" th="*{simei}" /></td>
+   </tr>
+   <tr>
+     <td><input type="submit" /></td>
+   </tr>
+</table>   
+ </form>
+ <table>
+ <tr>
+   <th>tantousya_renban</th>
+   <th>tantousya_id</th>
+   <th>simei</th>
+ </tr>
+ <tr th:each="content:${list}">
+   <td th:text="${content.tantousya_renban}"></td>
+   <td th:text="${content.tantousya_id}"></td>
+   <td th:text="${content.simei}"></td>
+ </tr>
+ </table>
+</body>
+</html>
