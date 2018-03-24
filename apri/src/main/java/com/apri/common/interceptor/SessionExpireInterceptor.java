@@ -1,4 +1,4 @@
-package com.apri.common;
+package com.apri.common.interceptor;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
