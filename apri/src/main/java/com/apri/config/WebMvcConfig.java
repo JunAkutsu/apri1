@@ -3,6 +3,7 @@ package com.apri.config;
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,10 @@ import com.apri.common.interceptor.SessionExpireInterceptor;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer  {
+	
+	@Autowired
+    private MessageSource messageSource;
+	
     /**
      * Interceptorを登録する
      */
@@ -60,26 +65,24 @@ public class WebMvcConfig implements WebMvcConfigurer  {
     }
     
     /**
+     * LocalValidatorFactoryBeanのsetValidationMessageSourceで
+     * バリデーションメッセージをValidationMessages.propertiesからSpringの
+     * MessageSource(messages.properties)に上書きする
+     * 
+     * @return localValidatorFactoryBean
+     */
+    @Bean
+    public LocalValidatorFactoryBean validator() {
+        LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
+        localValidatorFactoryBean.setValidationMessageSource(messageSource);
+        return localValidatorFactoryBean;
+    }
+    
+    /**
      * ValidationメッセージをUTF-8で設定できるようにする
      */
     @Override
     public Validator getValidator() {
         return validator();
     }
-
-    @Bean
-    public LocalValidatorFactoryBean validator() {
-        LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
-        validator.setValidationMessageSource(messageSource());
-        return validator;
-    }
-
-    private MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        //プロパティファイルの名前やディレクトリも変更可能
-        messageSource.setBasename("classpath:/ValidationMessages");
-        //UTF-8に設定
-        messageSource.setDefaultEncoding("UTF-8");
-        return messageSource;
-    }    
 }

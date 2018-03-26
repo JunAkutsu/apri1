@@ -9,81 +9,30 @@ public class ApplicationException extends RuntimeException {
     /** 例外原因 */
     protected Throwable cause;
 
-    /** メッセージ引数 */
-    protected Object[] args;
-
-    /** エラー */
-    protected HttpErrors error;
-
     /**
      * コンストラクタ。
-     * @param error エラー
+     * @param message この例外のメッセージです。
      */
-    public ApplicationException(HttpErrors error) {
-        super();
-        this.error = error;
+    public ApplicationException(String message) {
+        super(message);
+        this.cause = null;
     }
-
+    
     /**
-     * コンストラクタ。
-     * @param error エラー
-     * @param args  バインド変数
+     * 原因となった例外を指定してインスタンスを構築します。
+     * @param cause この例外の原因となった例外です。
      */
-    public ApplicationException(HttpErrors error, String... args) {
-        super();
-        this.error = error;
-        this.args = args;
+    public ApplicationException(Throwable cause) {
+      super(cause.getLocalizedMessage());
+      this.cause = cause;
     }
+    
+    
+    public Throwable getCause() {
+		return cause;
+	}
 
-
-    /**
-     * コンストラクタ。
-     * @param error エラー
-     * @param cause 元の例外
-     */
-    public ApplicationException(HttpErrors error, Throwable cause) {
-        super(cause);
-        this.error = error;
-        this.cause = cause;
-    }
-
-    /**
-     * コンストラクタ。
-     * @param error エラー
-     * @param cause 元の例外
-     * @param args  バインド変数
-     */
-    public ApplicationException(HttpErrors error, Throwable cause, String... args) {
-        super(cause);
-        this.error = error;
-        this.cause = cause;
-        this.args = args;
-    }
-
-    /**
-     * エラーを返します。
-     * @return エラー
-     */
-    public HttpErrors getError() {
-        return this.error;
-    }
-
-    /**
-     * メッセージ引数一覧を返します。
-     * @return メッセージ引数一覧
-     */
-    public Object[] getArgs() {
-        return this.args;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getMessage() {
-        if (args != null) {
-            return "[" + error.name() + "]" + MessageFormat.format(error.getMessage(), args);
-        }
-        return "[" + error.name() + "]" + error.getMessage();
-    }
+	public void setCause(Throwable cause) {
+		this.cause = cause;
+	}
 }

@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DumpLogger {
     /** 設定対象 */
-    public static final String TARGET_ALL = "execution(* com.apri..*.*(..))"
+    public static final String TARGET_ALL = "execution(* com..*.*(..))"
             + " && (bean(*Controller) || bean(*Logic) || bean(*Dao))";
 
     /** ロガー */

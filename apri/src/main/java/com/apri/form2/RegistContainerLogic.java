@@ -1,4 +1,4 @@
-package com.apri.ajax;
+package com.apri.form2;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,45 +16,48 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.apri.common.exception.ApplicationException;
+import org.springframework.web.servlet.ModelAndView;
 import com.apri.sample2.TantousyaService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 
-//ajax
-
 @Controller
-@RequestMapping(value="/ajax")
+@RequestMapping(value="/form2")
 public class RegistContainerLogic {
 
+    // この記述がないとｈｔｍｌ側でth:object="${registForm}"、th:value="*{name}"を記述しているとエラーが発生する。
+	@ModelAttribute
+    RegistForm setUpForm() {
+        return new RegistForm();
+    }
 	@RequestMapping(method=RequestMethod.GET)
 	public String index(Model model){
-		return "ajax/index";
+		return "form2/index";
 	}
 	
-	@RequestMapping(value="/json",consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,method=RequestMethod.POST)
-	@ResponseBody
-	public String ajax_regist(@RequestBody JsonBean jsonBean){
-		// new GsonBuilderを使用すると値がNULLの場合もJSONに出力される。
-		// new GSONを使用すると値がNULLの場合は、JSONから外される。
-		Gson gson = new GsonBuilder().serializeNulls().create();
-		
-		HashMap map = new HashMap();
-		map.put("input_value", jsonBean.getV_a1());
-		map.put("tantousya_renban", "102");
-		map.put("tantousya_mei", "山田一郎");
-		map.put("tantousya_age", null);
-		// ログ出力
+	//@Validatedがないと、RegistFormにある@MAXなどのアノテーションが動かない)
+	@RequestMapping(value="/commit",method=RequestMethod.POST)
+	public ModelAndView commit(@ModelAttribute @Validated RegistForm form, BindingResult result,ModelAndView mav){
 		Logger logger = LoggerFactory.getLogger(RegistContainerLogic.class);
-		logger.info("KITA1");
-		return gson.toJson(map);
+		
+		if(result.hasErrors()){
+			logger.info("error="+result.toString());
+		}
+		else{
+			if(form.getAge() == 7 || form.getAge() == 10){
+				result.rejectValue("age", "error.age.seven", new Object[]{"7","10"}, "7は入力出来ません。");
+			}
+		}
+		
+		mav.setViewName("form2/index");
+		return mav;
 	}
 }
