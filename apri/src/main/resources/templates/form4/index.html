@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.thymleaf.org">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bootstrapの基本テンプレート</title>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-1/css/bootstrap.min.css}" />
+  </head>
+  <body>
+	<h1>フォームデータ(明細あり)</h1>
+	<p class="bg-primary">この段落に適用しましょう。</p>
+    <div id="search_message"></div>
+	<ul>
+    </ul>	
+	<form id="form" method="POST" action="/form4/commit" th:object="${registForm}">
+    </ul>
+
+	  name:<input id="name" type="text" name="name"  th:value="*{name}" />
+	  <BR>
+      age:<input id="age" type="text" name="age"  th:value="*{age}" />
+	  <BR>
+      Item1(name):<input id="age" type="text" name="contents[0].itemName"  th:value="*{contents[0].itemName}" />
+      Item1(price):<input id="age" type="text" name="contents[0].price"  th:value="*{contents[0].price}" />
+	  <BR>
+      Item2(name):<input id="age" type="text" name="contents[1].itemName"  th:value="*{contents[1].itemName}" />
+      Item2(price):<input id="age" type="text" name="contents[1].price"  th:value="*{contents[1].price}" />
+      
+  	  <div class="controller container">
+	    <input type="submit" value="送信">
+	  </div>
+	</form>
+	<script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/4.0.0-1/js/bootstrap.min.js}"></script>
+  </body>
+</html>
