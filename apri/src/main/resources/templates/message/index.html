@@ -11,10 +11,12 @@
 	<h1>strap</h1>
 	<p class="bg-primary">この段落に適用しましょう。</p>
     <div id="search_message"></div>
+    <div custom:errors="${messages}"></div>
+    <!-- 
 	<ul>
-	  <li th:each="message : ${messages}" custom:messages="${message}" style="color: red">Hello Planet!</li>
+	  <li th:each="message : ${messages}" custom:errors="${message}" style="color: red">Hello Planet!</li>
 	</ul>
-    <p th:text="${messages}">Hi ya!</p>
+	 -->
 	<ul>
     </ul>	
 	<form id="form" method="POST" action="/message/commit" th:object="${registForm}">

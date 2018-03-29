@@ -1,9 +1,13 @@
 package com.apri.common.customTag;
 
+import java.util.List;
+
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.engine.AttributeName;
 import org.thymeleaf.model.IAttribute;
+import org.thymeleaf.model.IModel;
+import org.thymeleaf.model.IModelFactory;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.AbstractAttributeTagProcessor;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
@@ -13,12 +17,12 @@ import org.thymeleaf.standard.expression.StandardExpressions;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.unbescape.html.HtmlEscape;
 
-public class MessagesAttributeTagProcessor extends AbstractAttributeTagProcessor {
+public class ErrorsAttributeTagProcessor extends AbstractAttributeTagProcessor {
 
-    private static final String ATTR_NAME = "messages";
+    private static final String ATTR_NAME = "errors";
     private static final int PRECEDENCE = 10000;
 
-    public MessagesAttributeTagProcessor(final String dialectPrefix) {
+    public ErrorsAttributeTagProcessor(final String dialectPrefix) {
         super(
             TemplateMode.HTML, // This processor will apply only to HTML mode
             dialectPrefix,     // Prefix to be applied to name for matching
@@ -36,29 +40,46 @@ public class MessagesAttributeTagProcessor extends AbstractAttributeTagProcessor
             final AttributeName attributeName, final String attributeValue,
             final IElementTagStructureHandler structureHandler) {
 
-        /*
-         * In order to evaluate the attribute value as a Thymeleaf Standard Expression,
-         * we first obtain the parser, then use it for parsing the attribute value into
-         * an expression object, and finally execute this expression object.
-         */
+    	// メッセージの抽出
         final IEngineConfiguration configuration = context.getConfiguration();
-
         final IStandardExpressionParser parser = StandardExpressions.getExpressionParser(configuration);
-
         final IStandardExpression expression = parser.parseExpression(context, attributeValue);
+        final List error_list = (List) expression.execute(context);
 
-        final String value = (String) expression.execute(context);
+        // メッセージが存在する場合のみ、以下の処理を実施
+        if(error_list != null && error_list.size() != 0){
+            // モデルの作成
+        	IModelFactory modelFactory = context.getModelFactory(); 
+        	String ulTag = "ul";
+        	String liTag = "li";
+            IModel model = modelFactory.createModel();
 
-        /*
-         * Set the salutation as the body of the tag, HTML-escaped and
-         * non-processable (hence the 'false' argument)
-         */
-//        structureHandler.setBody(HtmlEscape.escapeHtml5(value) , false);
-        structureHandler.setBody(value , false);
-        String classTag = "style";
-        IAttribute classAttr = tag.getAttribute(classTag);
-        structureHandler.setAttribute(classTag, (classAttr == null) ? "color: red" : classAttr.getValue());        
-    }
+            // <ul>タグの設定
+            model.add(modelFactory.createOpenElementTag(ulTag));
+            
+            // メッセージ数分処理を実施
+            for(int i=0;i<error_list.size();i++){
+            	String value = (String)error_list.get(i);
+                model.add(modelFactory.createOpenElementTag(liTag));
+                model.add(modelFactory.createText(value));
+                model.add(modelFactory.createCloseElementTag(liTag));
+            }
+            
+            // </ul>タグの設定
+            model.add(modelFactory.createCloseElementTag(ulTag));
+            
+            structureHandler.setBody(model, false); 
+            
+            // classの設定のチェック
+            String classTag = "class";
+            IAttribute classAttr = tag.getAttribute(classTag);
+            // classが設定されていない場合は、styleを設定する。
+            if(classAttr == null){
+                String styleTag = "style";
+                structureHandler.setAttribute(styleTag, "color: red");        
+            }
+        }
+   }
 
 
 }

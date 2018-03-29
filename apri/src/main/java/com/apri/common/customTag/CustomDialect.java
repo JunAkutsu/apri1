@@ -26,7 +26,7 @@ public class CustomDialect extends AbstractProcessorDialect {
      */
     public Set<IProcessor> getProcessors(final String dialectPrefix) {
         final Set<IProcessor> processors = new HashSet<IProcessor>();
-        processors.add(new MessagesAttributeTagProcessor(dialectPrefix));
+        processors.add(new ErrorsAttributeTagProcessor(dialectPrefix));
         return processors;
     }
 }
