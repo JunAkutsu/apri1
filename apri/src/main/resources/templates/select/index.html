@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymleaf.org">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+<title>Insert title here</title>
+</head>
+<body>
+  <h4>tantousya List</h4>
+	<form id="form" method="POST" action="/select/commit" th:object="${selectForm}">
+      <td>
+        <select th:field="*{tantousya_renban}">
+           <option th:each="item : ${tantousya_list}" th:value="${item.tantousya_renban}" th:selected="${item.tantousya_renban == tantousya_renban}"  th:text="${item.simei}"></option>
+        </select>
+      </td>
+      LabelValue:
+      <td custom:label="${find_tantousya_list}" selectedValue="*{tantousya_renban}" /> 
+      Map:
+      <td custom:label="${find_map}" selectedValue="*{tantousya_renban}" /> 
+	</form>
+  </td>
+</body>
+</html>

@@ -45,41 +45,33 @@ public class ErrorsAttributeTagProcessor extends AbstractAttributeTagProcessor {
         final IStandardExpressionParser parser = StandardExpressions.getExpressionParser(configuration);
         final IStandardExpression expression = parser.parseExpression(context, attributeValue);
         final List error_list = (List) expression.execute(context);
+        
+        // タグの抽出
+        String outerTag = tag.getAttributeValue("outerTag") == null ? "ul" : tag.getAttributeValue("outerTag");
+        String innerTag = tag.getAttributeValue("innerTag") == null ? "li" : tag.getAttributeValue("innerTag");
 
         // メッセージが存在する場合のみ、以下の処理を実施
         if(error_list != null && error_list.size() != 0){
             // モデルの作成
         	IModelFactory modelFactory = context.getModelFactory(); 
-        	String ulTag = "ul";
-        	String liTag = "li";
             IModel model = modelFactory.createModel();
 
             // <ul>タグの設定
-            model.add(modelFactory.createOpenElementTag(ulTag));
+            model.add(modelFactory.createOpenElementTag(outerTag));
             
             // メッセージ数分処理を実施
             for(int i=0;i<error_list.size();i++){
             	String value = (String)error_list.get(i);
-                model.add(modelFactory.createOpenElementTag(liTag));
+                model.add(modelFactory.createOpenElementTag(innerTag,"style","color: red"));
                 model.add(modelFactory.createText(value));
-                model.add(modelFactory.createCloseElementTag(liTag));
+                model.add(modelFactory.createCloseElementTag(innerTag));
             }
             
             // </ul>タグの設定
-            model.add(modelFactory.createCloseElementTag(ulTag));
+            model.add(modelFactory.createCloseElementTag(outerTag));
             
-            structureHandler.setBody(model, false); 
-            
-            // classの設定のチェック
-            String classTag = "class";
-            IAttribute classAttr = tag.getAttribute(classTag);
-            // classが設定されていない場合は、styleを設定する。
-            if(classAttr == null){
-                String styleTag = "style";
-                structureHandler.setAttribute(styleTag, "color: red");        
-            }
+//            structureHandler.setBody(model, false); 
+            structureHandler.replaceWith(model, false);
         }
    }
-
-
 }
