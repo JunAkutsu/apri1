@@ -87,7 +87,7 @@ public class LabelAttributeTagProcessor extends AbstractAttributeTagProcessor {
             }
         	
             if(label != null){
-                structureHandler.setBody(label.toString(), false); 
+                structureHandler.replaceWith(label.toString(), false);
             }
         }
    }
