@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.apri.common.customTag.LabelValue;
+import com.apri.common.exception.ApplicationException;
 import com.apri.common.masterHelper.KeyValueFactory;
 import com.apri.common.masterHelper.KeyValueHelper;
 
@@ -42,7 +43,7 @@ public class SelectContainerLogic {
     }
 	
 	@RequestMapping(value="/", method=RequestMethod.GET)
-	public String index(Model model){
+	public String index(Model model) throws ApplicationException {
 		KeyValueHelper helper = keyValueFactory.newInstance();
 //		Map<Object,Object> result = helper.getTantousya();
 		Map<Object,Object> result = helper.getTantousyaWithNULL();

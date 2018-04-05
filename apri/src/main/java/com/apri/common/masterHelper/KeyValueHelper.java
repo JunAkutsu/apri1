@@ -10,6 +10,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+
+import com.apri.common.exception.ApplicationException;
 /**
  * SQLを実行し、その結果を加工するクラス
  */
@@ -27,7 +29,8 @@ public class KeyValueHelper implements Serializable {
 		return masterMap;
 	}
 	
-	public Map<Object,Object> getTantousya(){
+	public Map<Object,Object> getTantousya()
+	throws ApplicationException {
 		// キャッシュキー名を取得するデータ毎に設定する。
 		String cacheKey = "tantousya:N";
 		Map<Object,Object> result = masterMap.get(cacheKey);
@@ -38,7 +41,8 @@ public class KeyValueHelper implements Serializable {
 		return result;
 	}
 	
-	public Map<Object,Object> getTantousyaWithNULL(){
+	public Map<Object,Object> getTantousyaWithNULL()
+	throws ApplicationException {
 		// キャッシュキー名を取得するデータ毎に設定する。
 		String cacheKey = "tantousya:NULL";
 		Map<Object,Object> result = masterMap.get(cacheKey);
@@ -57,7 +61,8 @@ public class KeyValueHelper implements Serializable {
 	 * @param renban key_value_tblの連番
 	 * @return ラベルの値をキーとして保持しているマップ
 	 */	
-	public Map<Object,Object> getKeyValue(Integer renban){
+	public Map<Object,Object> getKeyValue(Integer renban)
+	throws ApplicationException {
 		// キャッシュキー名を取得するデータ毎に設定する。
 		String cacheKey = "keyValue:N"+renban;
 		Map<Object,Object> result = masterMap.get(cacheKey);
@@ -74,7 +79,9 @@ public class KeyValueHelper implements Serializable {
 	 * @param renban key_value_tblの連番
 	 * @return ラベルの値をキーとして保持しているマップ
 	 */	
-	public Map<Object,Object> getKeyValueInteger(Integer renban){
+	public Map<Object,Object> getKeyValueInteger(Integer renban)
+	throws ApplicationException {
+	
 		// キャッシュキー名を取得するデータ毎に設定する。
 		String cacheKey = "keyValueInteger:N"+renban;
 		Map<Object,Object> result = masterMap.get(cacheKey);
@@ -91,7 +98,9 @@ public class KeyValueHelper implements Serializable {
 	 * @param renban key_value_tblの連番
 	 * @return ラベルの値をキーとして保持しているマップ
 	 */	
-	public Map<Object,Object> getKeyValueLong(Integer renban){
+	public Map<Object,Object> getKeyValueLong(Integer renban)
+	throws ApplicationException {
+	
 		// キャッシュキー名を取得するデータ毎に設定する。
 		String cacheKey = "keyValueLong:N"+renban;
 		Map<Object,Object> result = masterMap.get(cacheKey);

@@ -4,9 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import com.apri.common.exception.ApplicationException;
 
 @Service
 public class KeyValueService {
@@ -14,8 +18,11 @@ public class KeyValueService {
 	@Autowired
 	@Qualifier("common.masterHelper.KeyValueMapper")
 	KeyValueMapper keyValueMapper;
+
+    
+	public Map<Object,Object> getTantousya()
+	throws ApplicationException {
 	
-	public Map<Object,Object> getTantousya(){
 		List<KeyValue> list = keyValueMapper.queryTantousya();
 		Map<Object,Object> result = new HashMap<>();
 		for(int i=0;i<list.size();i++){
@@ -31,7 +38,8 @@ public class KeyValueService {
 	 * @param renban key_value_tblの連番
 	 * @return ラベルの値をキーとして保持しているマップ
 	 */	
-	public Map<Object,Object> getQuerykeyValue(Integer renban){
+	public Map<Object,Object> getQuerykeyValue(Integer renban)
+	throws ApplicationException {
 		List<KeyValue> list = keyValueMapper.querykeyValue(renban);
 		Map<Object,Object> result = new HashMap<>();
 		for(int i=0;i<list.size();i++){
@@ -47,7 +55,9 @@ public class KeyValueService {
 	 * @param renban key_value_tblの連番
 	 * @return ラベルの値をキーとして保持しているマップ
 	 */	
-	public Map<Object,Object> getQuerykeyValueInteger(Integer renban){
+	public Map<Object,Object> getQuerykeyValueInteger(Integer renban)
+	throws ApplicationException {
+	
 		List<KeyValue> list = keyValueMapper.querykeyValueInteger(renban);
 		Map<Object,Object> result = new HashMap<>();
 		for(int i=0;i<list.size();i++){
@@ -63,7 +73,8 @@ public class KeyValueService {
 	 * @param renban key_value_tblの連番
 	 * @return ラベルの値をキーとして保持しているマップ
 	 */	
-	public Map<Object,Object> getQuerykeyValueLong(Integer renban){
+	public Map<Object,Object> getQuerykeyValueLong(Integer renban)
+	throws ApplicationException {
 		List<KeyValue> list = keyValueMapper.querykeyValueLong(renban);
 		Map<Object,Object> result = new HashMap<>();
 		for(int i=0;i<list.size();i++){

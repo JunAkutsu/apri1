@@ -3,6 +3,7 @@
 　 　<!-- ファイルの出力先を指定する事。 -->
   <property name="log_dir" value="C:/logs" />
   
+  
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 	<target>System.out</target>
     <encoder>
@@ -12,7 +13,7 @@
       <level>INFO</level>
     </filter>    
   </appender>
-  
+
   <appender name="DUMP_LOGGER" class="ch.qos.logback.core.ConsoleAppender">
 	<target>System.out</target>
     <encoder>
@@ -23,6 +24,16 @@
     </filter>    
   </appender>
   
+  <appender name="SQL_LOGGER" class="ch.qos.logback.core.ConsoleAppender">
+	<target>System.out</target>
+    <encoder>
+	  <pattern>%d{yyyy/MM/dd HH:mm:ss.SSS} [%t] %highlight(%-5le) %cyan(%-40.40lo{36}) - %green(%msg) %n</pattern>
+    </encoder>
+	<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>DEBUG</level>
+    </filter>    
+  </appender>
+
   <appender name="FILE_A" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${log_dir}\SystemOut.log</file>
 　　　 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -58,6 +69,10 @@
 　　<logger name="dump_logger" level="TRACE">
     <appender-ref ref="DUMP_LOGGER" />
   </logger>  
+ 
+　　<logger name="com.apri" level="DEBUG">
+    <appender-ref ref="SQL_LOGGER" />
+  </logger>
   
   <root level="INFO">
     <appender-ref ref="STDOUT" />
