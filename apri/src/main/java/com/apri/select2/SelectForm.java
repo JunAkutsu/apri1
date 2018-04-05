@@ -16,6 +16,15 @@ public class SelectForm implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Long tantousya_renban;
+	private String mode;
+
+	public String getMode() {
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
 
 	public Long getTantousya_renban() {
 		return tantousya_renban;

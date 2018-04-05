@@ -10,4 +10,36 @@
           FROM tantousya
     </select>
     
+    <select id="querykeyValue" resultType="com.apri.common.masterHelper.KeyValue">
+        SELECT key AS "key",
+               value AS "value"
+          FROM key_value_tbl
+         Where renban = #{renban}
+         ORDER BY sort_no
+    </select>
+
+    <resultMap id="ResultMapInteger" type="com.apri.common.masterHelper.KeyValue">
+      <result property="key" column="key" javaType="Integer" />
+  	  <result property="value" column="value" javaType="String" />
+    </resultMap>
+    <select id="querykeyValueInteger" resultMap="ResultMapInteger">
+        SELECT key AS "key",
+               value AS "value"
+          FROM key_value_tbl
+         Where renban = #{renban}
+         ORDER BY sort_no
+    </select>
+
+    <resultMap id="ResultMapLong" type="com.apri.common.masterHelper.KeyValue">
+      <result property="key" column="key" javaType="Long" />
+  	  <result property="value" column="value" javaType="String" />
+    </resultMap>
+    <select id="querykeyValueLong" resultMap="ResultMapLong">
+        SELECT key AS "key",
+               value AS "value"
+          FROM key_value_tbl
+         Where renban = #{renban}
+         ORDER BY sort_no
+    </select>
+    
 </mapper>

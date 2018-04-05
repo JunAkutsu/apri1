@@ -4,7 +4,7 @@ import java.util.Map;
 import java.io.Serializable;
 
 /**
- * <p>マップに追加する際のキーと値を保持するオブジェクトです。
+ * マップに追加する際のキーと値を保持するオブジェクトです。
  */
 public class KeyValue implements Serializable {
 

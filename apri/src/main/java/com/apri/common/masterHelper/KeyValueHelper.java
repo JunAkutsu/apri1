@@ -10,7 +10,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-
+/**
+ * SQLを実行し、その結果を加工するクラス
+ */
 public class KeyValueHelper implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -19,30 +21,16 @@ public class KeyValueHelper implements Serializable {
 	KeyValueService key_value_service;
 	
 	// マスタの内容を保存するマップ
-	private final HashMap masterMap = new HashMap();
-	
-	public HashMap getMasterMap() {
+	private final HashMap<String,Map<Object,Object>> masterMap = new HashMap<>();
+
+	public HashMap<String,Map<Object,Object>> getMasterMap() {
 		return masterMap;
 	}
 	
-	/** マスターのデータを使用してKeyValueリストを作成する際は、
-	 * ここにあるひな形を使用して作成して下さい。
-	 * 
-  	    public Map getXXXXX(){
-			String cacheKey = "XXXXX:N";
-			Map result = (Map)masterMap.get(cacheKey);
-			if(result == null){
-				result = key_value_service.getTantousya();
-        		masterMap.put(cacheKey, result);
-			}
-			return result;
-		}
-	 **/
-	
-	public Map getTantousya(){
+	public Map<Object,Object> getTantousya(){
 		// キャッシュキー名を取得するデータ毎に設定する。
 		String cacheKey = "tantousya:N";
-		Map result = (Map)masterMap.get(cacheKey);
+		Map<Object,Object> result = masterMap.get(cacheKey);
 		if(result == null){
 			result = key_value_service.getTantousya();
 	        masterMap.put(cacheKey, result);
@@ -50,12 +38,12 @@ public class KeyValueHelper implements Serializable {
 		return result;
 	}
 	
-	public Map getTantousyaWithNULL(){
+	public Map<Object,Object> getTantousyaWithNULL(){
 		// キャッシュキー名を取得するデータ毎に設定する。
 		String cacheKey = "tantousya:NULL";
-		Map result = (Map)masterMap.get(cacheKey);
+		Map<Object,Object> result = masterMap.get(cacheKey);
 		if(result == null){
-	        result = new HashMap();
+	        result = new HashMap<>();
 	        result.put(new Integer(-1), "(指定なし)");
 			result.putAll(key_value_service.getTantousya());
 	        masterMap.put(cacheKey, result);
@@ -63,5 +51,54 @@ public class KeyValueHelper implements Serializable {
 		return result;
 	}
 	
+	/**
+	 * key_value_tblから値を取得する。
+	 * 取得したKeyはStirng型である。
+	 * @param renban key_value_tblの連番
+	 * @return ラベルの値をキーとして保持しているマップ
+	 */	
+	public Map<Object,Object> getKeyValue(Integer renban){
+		// キャッシュキー名を取得するデータ毎に設定する。
+		String cacheKey = "keyValue:N"+renban;
+		Map<Object,Object> result = masterMap.get(cacheKey);
+		if(result == null){
+			result = key_value_service.getQuerykeyValue(renban);
+	        masterMap.put(cacheKey, result);
+		}
+		return result;
+	}
 	
+	/**
+	 * key_value_tblから値を取得する。
+	 * 取得したKeyはInteger型である。
+	 * @param renban key_value_tblの連番
+	 * @return ラベルの値をキーとして保持しているマップ
+	 */	
+	public Map<Object,Object> getKeyValueInteger(Integer renban){
+		// キャッシュキー名を取得するデータ毎に設定する。
+		String cacheKey = "keyValueInteger:N"+renban;
+		Map<Object,Object> result = masterMap.get(cacheKey);
+		if(result == null){
+			result = key_value_service.getQuerykeyValueInteger(renban);
+	        masterMap.put(cacheKey, result);
+		}
+		return result;
+	}
+	
+	/**
+	 * key_value_tblから値を取得する。
+	 * 取得したKeyはLong型である。
+	 * @param renban key_value_tblの連番
+	 * @return ラベルの値をキーとして保持しているマップ
+	 */	
+	public Map<Object,Object> getKeyValueLong(Integer renban){
+		// キャッシュキー名を取得するデータ毎に設定する。
+		String cacheKey = "keyValueLong:N"+renban;
+		Map<Object,Object> result = masterMap.get(cacheKey);
+		if(result == null){
+			result = key_value_service.getQuerykeyValueLong(renban);
+	        masterMap.put(cacheKey, result);
+		}
+		return result;
+	}
 }

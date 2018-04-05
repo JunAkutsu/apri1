@@ -36,16 +36,21 @@ public class SelectContainerLogic {
 	@ModelAttribute
 	SelectForm setUpForm() {
 		SelectForm form = new SelectForm();
-		form.setTantousya_renban(new Long(6));
+		form.setTantousya_renban(new Long(1));
+		form.setMode("red");
         return form;
     }
 	
 	@RequestMapping(value="/", method=RequestMethod.GET)
 	public String index(Model model){
 		KeyValueHelper helper = keyValueFactory.newInstance();
-//		Map result = helper.getTantousya();
-		Map result = helper.getTantousyaWithNULL();
+//		Map<Object,Object> result = helper.getTantousya();
+		Map<Object,Object> result = helper.getTantousyaWithNULL();
+		Map<Object,Object> result2 = helper.getKeyValueLong(new Integer(1));
+		Map<Object,Object> result3 = helper.getKeyValue(new Integer(2));
 		model.addAttribute("find_map", result);
+		model.addAttribute("find_key_value", result2);
+		model.addAttribute("find_key_value_string", result3);
 		return "select2/index";
 	}
 	
