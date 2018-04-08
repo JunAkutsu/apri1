@@ -30,7 +30,7 @@
 	  <pattern>%d{yyyy/MM/dd HH:mm:ss.SSS} [%t] %highlight(%-5le) %cyan(%-40.40lo{36}) - %green(%msg) %n</pattern>
     </encoder>
 	<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-      <level>DEBUG</level>
+      <level>INFO</level>
     </filter>    
   </appender>
 
@@ -66,12 +66,13 @@
     </filter>    
   </appender>
   
-　　<logger name="dump_logger" level="TRACE">
+　　<logger name="dump_logger" level="TRACE" additivity="false">
     <appender-ref ref="DUMP_LOGGER" />
   </logger>  
  
-　　<logger name="com.apri" level="DEBUG">
+　　<logger name="sql_logger" level="INFO" additivity="false">
     <appender-ref ref="SQL_LOGGER" />
+    <appender-ref ref="FILE_A" />
   </logger>
   
   <root level="INFO">

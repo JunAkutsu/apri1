@@ -36,7 +36,7 @@ public class KeyValue implements Serializable {
    * マップのエントリからインスタンスを構築します。
    * @param entry マップのエントリ
    */
-  public KeyValue(Map.Entry entry) {
+  public KeyValue(Map.Entry<Object,Object> entry) {
     this.key = entry.getKey();
     this.value = entry.getValue();
   }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,7 @@ import com.apri.common.masterHelper.KeyValueHelper;
 //MasterFinderBaseもどきを作成
 
 @Controller
+@Scope("request")
 @RequestMapping(value="/select2")
 public class SelectContainerLogic {
 

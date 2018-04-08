@@ -22,7 +22,9 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import com.apri.common.context.Context;
 import com.apri.common.context.RequestContext;
 import com.apri.common.filter.LoggingFilter;
+import com.apri.common.filter.SQLLoggingFilter;
 import com.apri.common.interceptor.SessionExpireInterceptor;
+import com.apri.common.maintenance.ConfigService;
 
 
 
@@ -53,6 +55,7 @@ public class WebMvcConfig implements WebMvcConfigurer  {
 		bean.setOrder(1);
 		return bean;
 	}
+
     
     /**
      * HttpServletRequestを利用したContext実装を利用する（AOPでのロギングで利用する）
@@ -85,4 +88,5 @@ public class WebMvcConfig implements WebMvcConfigurer  {
     public Validator getValidator() {
         return validator();
     }
+    
 }

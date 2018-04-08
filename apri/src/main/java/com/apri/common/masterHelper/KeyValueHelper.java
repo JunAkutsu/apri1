@@ -1,17 +1,22 @@
 package com.apri.common.masterHelper;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
-
 import com.apri.common.exception.ApplicationException;
+import com.apri.common.sqlHelper.SQLHelperService;
+
+import org.apache.ibatis.session.*;
+import org.apache.ibatis.builder.xml.*;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+
 /**
  * SQLを実行し、その結果を加工するクラス
  */
@@ -21,6 +26,11 @@ public class KeyValueHelper implements Serializable {
 	
 	@Autowired
 	KeyValueService key_value_service;
+	
+	@Autowired
+	SQLHelperService SQLHelperService;
+	
+	private static final String KEY_VALUE_MAPPER = "\\src\\main\\java\\com\\apri\\common\\masterHelper\\KeyValueMapper.xml";
 	
 	// マスタの内容を保存するマップ
 	private final HashMap<String,Map<Object,Object>> masterMap = new HashMap<>();
@@ -68,7 +78,9 @@ public class KeyValueHelper implements Serializable {
 		Map<Object,Object> result = masterMap.get(cacheKey);
 		if(result == null){
 			result = key_value_service.getQuerykeyValue(renban);
-	        masterMap.put(cacheKey, result);
+			Object params = new Object[]{renban};
+			// SQLの出力
+			SQLHelperService.logger_sql(KEY_VALUE_MAPPER,"querykeyValueInteger", null);
 		}
 		return result;
 	}
