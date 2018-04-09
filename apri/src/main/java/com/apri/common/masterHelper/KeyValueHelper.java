@@ -1,9 +1,5 @@
 package com.apri.common.masterHelper;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,11 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.apri.common.exception.ApplicationException;
 import com.apri.common.sqlHelper.SQLHelperService;
-
-import org.apache.ibatis.session.*;
-import org.apache.ibatis.builder.xml.*;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
 
 /**
  * SQLを実行し、その結果を加工するクラス
@@ -46,6 +37,9 @@ public class KeyValueHelper implements Serializable {
 		Map<Object,Object> result = masterMap.get(cacheKey);
 		if(result == null){
 			result = key_value_service.getTantousya();
+			Object params = null;
+			// SQLの出力
+			SQLHelperService.logger_sql(KEY_VALUE_MAPPER,"queryTantousya", params);
 	        masterMap.put(cacheKey, result);
 		}
 		return result;
@@ -60,6 +54,9 @@ public class KeyValueHelper implements Serializable {
 	        result = new HashMap<>();
 	        result.put(new Integer(-1), "(指定なし)");
 			result.putAll(key_value_service.getTantousya());
+			Object params = null;
+			// SQLの出力
+			SQLHelperService.logger_sql(KEY_VALUE_MAPPER,"queryTantousya", params);
 	        masterMap.put(cacheKey, result);
 		}
 		return result;
@@ -78,9 +75,9 @@ public class KeyValueHelper implements Serializable {
 		Map<Object,Object> result = masterMap.get(cacheKey);
 		if(result == null){
 			result = key_value_service.getQuerykeyValue(renban);
-			Object params = new Object[]{renban};
+			Object params = (Object)renban;
 			// SQLの出力
-			SQLHelperService.logger_sql(KEY_VALUE_MAPPER,"querykeyValueInteger", null);
+			SQLHelperService.logger_sql(KEY_VALUE_MAPPER,"querykeyValue", params);
 		}
 		return result;
 	}
@@ -99,6 +96,9 @@ public class KeyValueHelper implements Serializable {
 		Map<Object,Object> result = masterMap.get(cacheKey);
 		if(result == null){
 			result = key_value_service.getQuerykeyValueInteger(renban);
+			Object params = (Object)renban;
+			// SQLの出力
+			SQLHelperService.logger_sql(KEY_VALUE_MAPPER,"querykeyValueInteger", params);
 	        masterMap.put(cacheKey, result);
 		}
 		return result;
@@ -118,6 +118,9 @@ public class KeyValueHelper implements Serializable {
 		Map<Object,Object> result = masterMap.get(cacheKey);
 		if(result == null){
 			result = key_value_service.getQuerykeyValueLong(renban);
+			Object params = (Object)renban;
+			// SQLの出力
+			SQLHelperService.logger_sql(KEY_VALUE_MAPPER,"querykeyValueLong", params);
 	        masterMap.put(cacheKey, result);
 		}
 		return result;

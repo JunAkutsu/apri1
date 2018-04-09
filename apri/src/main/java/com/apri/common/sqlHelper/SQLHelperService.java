@@ -29,7 +29,7 @@ public class SQLHelperService {
 	public void logger_sql(String path_file_name,String mapper_id,Object params)
 	throws ApplicationException {
 		try{
-			if(!configService.isSql_log_hyouji_flg()){
+			if(configService.isSql_log_hyouji_flg()){
 				// 現在ディレクトリーの取得
 				String absolute_path = new File(".").getAbsoluteFile().getParent();
 				
@@ -53,7 +53,9 @@ public class SQLHelperService {
 				logger.info("[SQL]");
 				logger.info(sql.getSql());
 				logger.info("[Parameters]");
-				logger.info(sql.getParameterObject().toString());
+				if(sql.getParameterObject() != null){
+					logger.info(sql.getParameterObject().toString());
+				}
 			}
 		}
 		catch (FileNotFoundException e) {
