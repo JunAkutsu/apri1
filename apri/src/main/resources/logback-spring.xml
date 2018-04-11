@@ -2,7 +2,6 @@
 <configuration>
 　 　<!-- ファイルの出力先を指定する事。 -->
   <property name="log_dir" value="C:/logs" />
-  <turboFilter class="com.apri.common.filter.CustomLoggingFilter"></turboFilter>
   
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 	<target>System.out</target>
@@ -29,9 +28,6 @@
     <encoder>
 	  <pattern>%d{yyyy/MM/dd HH:mm:ss.SSS} [%t] %highlight(%-5le) %cyan(%-40.40lo{36}) - %green(%msg) %n</pattern>
     </encoder>
-  <!--  
-	<filter class="com.apri.common.filter.SQLLoggingFilter">
--->
 	<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
       <level>DEBUG</level>
     </filter>    
@@ -72,10 +68,8 @@
 　　<logger name="dump_logger" level="TRACE" additivity="false">
     <appender-ref ref="DUMP_LOGGER" />
   </logger>  
-<!--
-　　<logger name="com.apri" level="DEBUG" additivity="false">
-  --> 
-　　<logger name="com.apri" level="DEBUG" additivity="false">
+
+　　<logger name="com.apri" level="INFO" additivity="false">
     <appender-ref ref="SQL_LOGGER" />
     <appender-ref ref="FILE_A" />
   </logger>

@@ -22,7 +22,6 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import com.apri.common.context.Context;
 import com.apri.common.context.RequestContext;
 import com.apri.common.filter.LoggingFilter;
-import com.apri.common.filter.SQLLoggingFilter;
 import com.apri.common.interceptor.SessionExpireInterceptor;
 import com.apri.common.maintenance.ConfigService;
 
