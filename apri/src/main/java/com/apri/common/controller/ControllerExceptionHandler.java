@@ -54,7 +54,7 @@ public class ControllerExceptionHandler {
      * @return 例外レスポンス
      */
     @ExceptionHandler(value = RuntimeException.class)
-    public String handleException(HttpServletRequest request, RuntimeException ex,Model model) {
+    public String handleRuntimeException(HttpServletRequest request, RuntimeException ex,Model model) {
         String message = ex.getMessage();
         logger.error(ex.getMessage(), ex);
 //        if (error.getStatus() == HttpStatus.INTERNAL_SERVER_ERROR) {
@@ -68,4 +68,5 @@ public class ControllerExceptionHandler {
         
         return "error/error";
     }
+    
 }
