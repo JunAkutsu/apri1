@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.thymleaf.org">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ログイン</title>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-1/css/bootstrap.min.css}" />
+  </head>
+  <body class="bg-dark">
+    <div class="container py-5">
+      <div class="row">
+        <div class="col-md-12">
+          <!-- 上部のタイトル -->
+          <h2 class="text-center text-white mb-4"></h2>
+          <div class="row">
+            <div class="col-md-6 mx-auto">
+              <div class="card rounded-0">
+                <div class="card-header">
+                  <h3 class="mb-0">Login</h3>
+                </div>
+				<div custom:errors="${error_messages}" />
+                <div class="card-body">
+		          <form id="loginForm" method="POST" th:action="@{/login}" >
+                    <div class="form-group">
+                      <label for="uname1">担当者ID</label>
+                      <input type="text" id="tantousya_id" name="tantousya_id" class="form-control form-control-lg rounded-0" required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="uname1">パスワード</label>
+                      <input type="password" id="password" name="password" class="form-control form-control-lg rounded-0" required="required" >
+                    </div>
+                    <button class="btn btn-success btn-lg float-right" id="btnLogin" type="submit">ログイン</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+	<script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/4.0.0-1/js/bootstrap.min.js}"></script>
+  </body>
+</html>
