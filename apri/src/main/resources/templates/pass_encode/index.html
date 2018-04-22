@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.thymleaf.org">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bootstrapの基本テンプレート</title>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-1/css/bootstrap.min.css}" />
+  </head>
+  <body>
+	<h1>strap</h1>
+	<p class="bg-primary">パスワード エンコード</p>
+    <div id="search_message"></div>
+	
+	パスワード：<td th:text="${password}"></td><BR>
+	パスワード(暗号化)：<td th:text="${password_encode}"></td><BR>
+	結果:<td th:text="${password_result}"></td><BR>
+	
+	<form id="form" method="POST" action="/pass/encode">
+	  <input id="password" type="text" name="password" />
+  	  <div class="controller container">
+	    <input type="submit" value="送信">
+	  </div>
+	</form>
+	<script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/4.0.0-1/js/bootstrap.min.js}"></script>
+  </body>
+</html>
