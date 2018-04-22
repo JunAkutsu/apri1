@@ -52,6 +52,7 @@ public class LoginContainerLogic {
 	@RequestMapping(value="/menu", method=RequestMethod.POST)
 	public String menu(@ModelAttribute("formModel") LoginForm input,Model model){
 		model.addAttribute("tantousya_id", input.getTantousya_id());
+		model.addAttribute("language", input.getLanguage());
 		return "login/menu";
 	}
 

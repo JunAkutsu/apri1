@@ -17,7 +17,14 @@ public class LoginForm implements Serializable {
 	
 	private String tantousya_id;
 	private String password;
+	private String language;
 	
+	public String getLanguage() {
+		return language;
+	}
+	public void setLanguage(String language) {
+		this.language = language;
+	}
 	public String getTantousya_id() {
 		return tantousya_id;
 	}
