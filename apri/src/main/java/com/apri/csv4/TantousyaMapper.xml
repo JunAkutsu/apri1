@@ -9,6 +9,7 @@
                tantousya_id,
                simei 
           FROM tantousya
+          ORDER by tantousya_renban
     </select>
     
 </mapper>

@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -41,14 +42,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter  {
 	// SpringSecurityの制限を無視してほしい場所の指定
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/static/**","/fonts/**","/jasperreports/**","/webjars/**","/pass/**");
+    	// /**を追加すると、configure()認証の記述をしても、実施されなくなる。各画面をテストする時は便利。
+        web.ignoring().antMatchers("/static/**","/fonts/**","/jasperreports/**","/webjars/**","/pass/**","/**");
     }
     
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 		   .authorizeRequests() // HttpSecurityからアクセス範囲を決めるオブジェクトの取得
-		   .antMatchers("/login").permitAll() // "/"は全ユーザアクセス許可の設定
+		   .antMatchers("/login").permitAll() // "/login"はログイン画面だけ全ユーザアクセス許可の設定
 		   .anyRequest().authenticated(); // 他のURLは認証が必要
 		http
 //		   .httpBasic(); // BASIC認証の設定
@@ -67,14 +69,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter  {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		auth
 		   // インメモリーの定義
 //		   .inMemoryAuthentication()
 //		   .withUser("user").password(passwordEncoder.encode("password")).roles("USER")
 //		   .and()
 //		   .withUser("admin").password(passwordEncoder.encode("password")).roles("ADMIN");
-		   .authenticationProvider(createAuthProvider());
+		   // 入力したパスワードをそのまま使用する場合は、以下の処理を実施する。
+		   .userDetailsService(loginService);
+		   // 入力したパスワードをハッシュ化した値でパスワード認証を行う場合は、以下のコメントを実施する。
+//		   .authenticationProvider(createAuthProvider());
 	}
 	
 	public DaoAuthenticationProvider createAuthProvider() {
@@ -85,7 +90,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter  {
 	    return authenticationProvider;
 	}
 	
+	@Bean
 	public static PasswordEncoder passwordEncoder() {
-	      return new BCryptPasswordEncoder();
+		   // 入力したパスワードをそのまま使用する場合は、以下の処理を実施する。
+		  return NoOpPasswordEncoder.getInstance();
+		   // 入力したパスワードをハッシュ化した値でパスワード認証を行う場合は、以下のコメントを実施する。
+//	      return new BCryptPasswordEncoder();
 	}	
 }
