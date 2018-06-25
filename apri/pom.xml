@@ -98,6 +98,12 @@
 		  <artifactId>jasperreports</artifactId>
     	  <version>6.5.1</version>
 		</dependency>
+		<!--  xlsx -> PDF 変換ライブラリ -->	    
+		<dependency>
+		  <groupId>org.jodconverter</groupId>
+		  <artifactId>jodconverter-local</artifactId>
+    	  <version>4.2.0</version>
+		</dependency>
 		
 		<!--  アプリ共通処理 -->	    
         <dependency>
