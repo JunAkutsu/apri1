@@ -20,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -30,6 +31,7 @@ import com.apri.common.context.RequestContext;
 import com.apri.common.filter.LoggingFilter;
 import com.apri.common.interceptor.SessionExpireInterceptor;
 import com.apri.login.LoginService;
+import com.apri.login.MyLogoutHandler;
 
 
 @Configuration
@@ -39,11 +41,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter  {
 	@Autowired
 	LoginService loginService;
 	
+	@Autowired
+    private MyLogoutHandler myLogoutHandler;
+	
 	// SpringSecurityの制限を無視してほしい場所の指定
     @Override
     public void configure(WebSecurity web) throws Exception {
     	// /**を追加すると、configure()認証の記述をしても、実施されなくなる。各画面をテストする時は便利。
-        web.ignoring().antMatchers("/static/**","/fonts/**","/jasperreports/**","/webjars/**","/pass/**","/**");
+//        web.ignoring().antMatchers("/static/**","/fonts/**","/jasperreports/**","/webjars/**","/pass/**","/**");
+      web.ignoring().antMatchers("/static/**","/fonts/**","/jasperreports/**","/webjars/**","/pass/**");
     }
     
 	@Override
@@ -63,7 +69,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter  {
 		       .permitAll()
 		       .and()
 		   .logout()
-		       .permitAll();
+		   	   .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // ログアウト時のURL。このURLとログアウトボタンに記述されるURLが一致する場合、自動的にログアウト処理を実施してくれる。
+		   	                                                               // 一致しない場合は、ログアウトボタンに記述されるURLを普通に処理する。
+		   	   .logoutSuccessUrl("/xlsx_pdf") // ログアウント成功時に遷移するURL
+		   	   .addLogoutHandler(myLogoutHandler) // ログアウト時の処理を独自に盛り込める。
+		   	   .deleteCookies("JSESSIONID") // クッキーから指定したクッキーを削除する。
+		   	   .invalidateHttpSession(true) // HTTPセッションを破棄する。
+		   	   .permitAll();
 		
 	}
 
