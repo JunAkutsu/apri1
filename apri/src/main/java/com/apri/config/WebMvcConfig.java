@@ -18,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.handler.MappedInterceptor;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import com.apri.common.context.Context;
@@ -37,13 +38,16 @@ public class WebMvcConfig implements WebMvcConfigurer  {
     /**
      * Interceptorを登録する
      */
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SessionExpireInterceptor())
-                .addPathPatterns("/**") // 適用対象のパス(パターン)を指定する
-                .excludePathPatterns("/static/**"); // 除外するパス(パターン)を指定する
+    @Bean
+    public SessionExpireInterceptor sessionExpireInterceptor() {
+    	return new SessionExpireInterceptor();
     }
     
+    @Bean
+    public MappedInterceptor interceptor() {
+    	return new MappedInterceptor(new String[]{"/**"}, sessionExpireInterceptor());
+    }
+	   
     /**
      * Filterを登録する
      * @return FilterRegistrationBean

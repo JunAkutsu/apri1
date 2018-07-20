@@ -1,13 +1,20 @@
 package com.apri.common.interceptor;
 
+import java.util.List;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.web.servlet.FlashMap;
+import org.springframework.web.servlet.FlashMapManager;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContextUtils;
+
+import com.apri.csv4.TantousyaDomain;
 
 
 /**
@@ -31,15 +38,32 @@ public class SessionExpireInterceptor implements HandlerInterceptor {
                 } 
                 else {
                     String requestUri = request.getRequestURI();
-                    // ログイン・ログアウト・タイムアウトページのタイムアウトは行わない。
 /*                    
+                    // ログイン・ログアウト・タイムアウトページのタイムアウトは行わない。
                     if (!((request.getContextPath() + AppConst.URL_LOGIN_PAGE + "/timeout").equals(requestUri) ||
                           (request.getContextPath() + AppConst.URL_LOGIN_PAGE).equals(requestUri) ||
                           (request.getContextPath() + AppConst.URL_LOGOUT_COMPLETED_PAGE).equals(requestUri))) {
                         // 通常画面の場合は、ログイン画面を表示しセッションタイムアウトメッセージを伝える。
                         response.sendRedirect(request.getContextPath() + AppConst.URL_LOGIN_PAGE+ "/timeout");
                     }
-*/
+*/                    
+                    // FlashMapを作成
+                    // リダイレクト先まで値を保持するスコープ。
+                    // リダイレクトは2度リクエストが発生するので、リクエストスコープでは値を保持できない。
+                    FlashMap flashMap = new FlashMap();
+
+                    // 渡したい値とキーを設定する
+                    flashMap.put("key", "リダイレクト先に値を渡す。");
+
+                    // リダイレクト先のパスを設定する
+                    flashMap.setTargetRequestPath(request.getContextPath() + "/error/session_timeout");
+
+                    // FlashMapManagerを利用して、FlashScopeに値をセット
+                    FlashMapManager flashMapManager = RequestContextUtils
+                            .getFlashMapManager(request);
+                    flashMapManager.saveOutputFlashMap(flashMap, request, response);
+                    response.sendRedirect(request.getContextPath() + "/error/session_timeout");
+                   
                 }
             }
         }
@@ -68,6 +92,7 @@ public class SessionExpireInterceptor implements HandlerInterceptor {
     }
     /**
      * セッションタイムアウト判定
+     * 今後ログイン時にアカウント情報を取得すると思うので、アカウント情報の有無によりセッションタイムアウトが発生したかどうをチェック追加する必要がある。
      *
      * @param request
      * @return
@@ -79,8 +104,13 @@ public class SessionExpireInterceptor implements HandlerInterceptor {
         }
         String requestSession = request.getRequestedSessionId();
         boolean isValid = request.isRequestedSessionIdValid();
+        
+        // 
+//        List<TantousyaDomain> list = (List)falsecurrentSession.getAttribute("tantousya_list");
+        boolean v_account_info=true;
+        
         return falsecurrentSession == null || requestSession == null || !isValid
-                || !requestSession.equals(falsecurrentSession.getId());
+                || !requestSession.equals(falsecurrentSession.getId()) || !v_account_info;
     }
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response,

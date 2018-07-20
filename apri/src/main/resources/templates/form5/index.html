@@ -13,7 +13,7 @@
     <div id="search_message"></div>
 	<ul>
     </ul>	
-	<form id="form" method="POST" action="/form5/commit" th:object="${registForm}">
+	<form id="form" method="POST" th:action="@{/form5/commit}" th:object="${registForm}">
 	 <ul>
       <li th:each="e : ${#fields.detailedErrors()}" th:text="${e.message}" />
     </ul>
@@ -28,7 +28,10 @@
       Item2(price):<input id="age" type="text" name="contents[1].price"  th:value="*{contents[1].price}" />
       
   	  <div class="controller container">
-	    <input type="submit" value="送信">
+  	  <!--  
+	    <input type="submit" value="送信" onclick="_csrf.value=777;alert(_csrf.value);">
+	    -->
+	    <input type="submit" value="送信" >
 	  </div>
 	</form>
 	<script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>

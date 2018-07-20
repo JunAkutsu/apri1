@@ -73,6 +73,9 @@ public class SelectContainerLogic {
 		
 		// セッション保存
 		session.setAttribute("tantousya_list", list);
+		
+		System.out.println(session.getMaxInactiveInterval());
+		
 		return "session/index";
 	}
 	

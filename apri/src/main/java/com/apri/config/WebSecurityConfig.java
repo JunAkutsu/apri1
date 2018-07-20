@@ -48,8 +48,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter  {
     @Override
     public void configure(WebSecurity web) throws Exception {
     	// /**を追加すると、configure()認証の記述をしても、実施されなくなる。各画面をテストする時は便利。
-//        web.ignoring().antMatchers("/static/**","/fonts/**","/jasperreports/**","/webjars/**","/pass/**","/**");
-      web.ignoring().antMatchers("/static/**","/fonts/**","/jasperreports/**","/webjars/**","/pass/**");
+        web.ignoring().antMatchers("/static/**","/fonts/**","/jasperreports/**","/webjars/**","/pass/**","/**");
+//      web.ignoring().antMatchers("/static/**","/fonts/**","/jasperreports/**","/webjars/**","/pass/**");
     }
     
 	@Override
