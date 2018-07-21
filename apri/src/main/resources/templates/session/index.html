@@ -14,7 +14,12 @@
 	
 	<form id="form" method="POST" action="/session/commit" >
   	  <div class="controller container">
-	    <input type="submit" value="セッションデータ取得">
+	    <input type="submit" value="セッションデータ取得(同じコントローラ)">
+	  </div>
+	</form>
+	<form id="form2" method="POST" action="/session_2/commit" >
+  	  <div class="controller container">
+	    <input type="submit" value="セッションデータ取得(違うコントローラ)">
 	  </div>
 	</form>
 	<script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
