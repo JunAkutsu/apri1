@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.thymleaf.org">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bootstrapの基本テンプレート</title>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-1/css/bootstrap.min.css}" />
+	<link rel="stylesheet" th:href="@{/webjars/fullcalendar/3.8.0/fullcalendar.min.css}" />
+	<link rel="stylesheet" th:href="@{/css/datepicker/tempusdominus-bootstrap-4.min.css}" />
+	<link rel="stylesheet" th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}" />
+	<link rel="stylesheet" th:href="@{/css/common.css}" />
+  </head>
+  <body>
+	<h1>ドラッグドロップ1</h1>
+ 	<div id="contents" class="container-fluid">
+	  <div class="row">
+	    <div class="col-xs-12">
+	      <div class="panel">
+	        <div class="panel-heading">
+			          スケジュール表
+    	    </div>
+  		    <div class="panel-body">
+	          <!-- メッセージ表示したい時はこの辺に -->
+	          <div class="row">
+    	        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+ 				   <div id="calendar"></div>　<!-- ここがカレンダー表示部分 -->
+            	</div>
+          	  </div>
+        	</div>
+      	  </div>
+        </div>
+      </div>
+    </div>          	
+<div id="calendarModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">イベント</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      </div>
+      <form method="post" id="dialog-form">
+        <div class="modal-body">
+		  <div id="err_message"></div>
+          <div class="modal-regist">
+            <div class="row modal-row">
+              <div class="input-group">
+                <input type="text" class="form-control event_name" name="event_name" id="event_name" placeholder="イベント名"  value="" /> 
+              </div>
+            </div>
+
+            <div class="line-adjust"></div>
+            <div class="row modal-row">
+              <div class="input-group date" id="datetimepicker" data-target-input="nearest">
+                <input type="text" class="form-control" name="event_day_from" id="event_day_from" placeholder="日付(From)"  value="" data-target="#datetimepicker" />
+				<div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker"> 
+			      <div class="input-group-text"><i class="fa fa-calendar"></i></div> 
+			    </div> 
+              </div>
+            </div>
+            
+            <div class="line-adjust"></div>
+            <div class="row modal-row">
+              <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                <input type="text" class="form-control" name="event_time_from" id="event_time_from" placeholder="時間(From)"  value="" data-target="#datetimepicker2" />
+				<div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker"> 
+			      <div class="input-group-text"><i class="fa fa-clock-o"></i></div> 
+			    </div> 
+              </div>
+            </div>
+
+            <div class="row modal-row">
+              <div class="input-group">
+                <input type="text" class="form-control event_day_to" name="event_day_to" id="event_day_to" placeholder="日付(To)"  value="">
+              </div>
+            </div>
+            <div class="row modal-row">
+              <div class="input-group">
+                <input type="text" class="form-control event_time_to" name="event_time_to" id="event_time_to" placeholder="時間"  value="">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn_save" class="btn btn-primary">登録</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">閉じる</button>
+        </div>
+ 	  </form>
+    </div>
+  </div></div>
+	<script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/moment/2.22.2/min/moment.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/fullcalendar/3.8.0/fullcalendar.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/fullcalendar/3.8.0/locale/ja.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/4.0.0-1/js/bootstrap.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/datepicker/tempusdominus-bootstrap-4.min.js}"></script>
+	<script type="text/javascript">
+    	$(function() {
+    		$('#datetimepicker').datetimepicker({
+                dayViewHeaderFormat: 'YYYY年 MMMM',
+                tooltips: {
+                    close: '閉じる',
+                    selectMonth: '月を選択',
+                    prevMonth: '前月',
+                    nextMonth: '次月',
+                    selectYear: '年を選択',
+                    prevYear: '前年',
+                    nextYear: '次年',
+                    selectTime: '時間を選択',
+                    selectDate: '日付を選択',
+                    prevDecade: '前期間',
+                    nextDecade: '次期間',
+                    selectDecade: '期間を選択',
+                    prevCentury: '前世紀',
+                    nextCentury: '次世紀'
+                },
+                format: 'YYYY/MM/DD',
+                locale: 'ja',
+                buttons: {
+	                showClose: true
+                }
+            });
+
+    		$('#datetimepicker2').datetimepicker({
+                tooltips: {
+                	close: '閉じる',
+                    pickHour: '時間を取得',
+                    incrementHour: '時間を増加',
+                    decrementHour: '時間を減少',
+                    pickMinute: '分を取得',
+                    incrementMinute: '分を増加',
+                    decrementMinute: '分を減少',
+                    pickSecond: '秒を取得',
+                    incrementSecond: '秒を増加',
+                    decrementSecond: '秒を減少',
+                    togglePeriod: '午前/午後切替',
+                    selectTime: '時間を選択'
+                },
+                format: 'HH:mm',
+                locale: 'ja',
+                buttons: {
+	                showClose: true
+                }
+            });
+    		
+    		$('#calendar').fullCalendar({
+    			header: {
+    		          // fullcalendarのヘッダーに配置するボタン
+    		          // 左側には「<、>、今日」のボタン
+    		          // 中央には表示している月
+    		          // 右側には月表示、週表示、日表示、月予定
+    		          left: 'prev,next today',
+    		          center: 'title',
+    		          right: 'month,agendaWeek,agendaDay,listMonth'
+    		        },
+
+   		        timeFormat: 'HH:mm', // 時間表示フォーマット
+	   		    timezone: 'Asia/Tokyo', // タイムゾーン設定
+	 	  		eventLimit: true, // イベント増えた時にリンクボタン表示
+	 	  		editable: true, // 編集可能設定
+	 	  		slotEventOverlap: true, // イベントの見た目を重ねて表示
+	 	  		selectable: true, // カレンダー空白部分のドラッグ可能
+	 	  		selectHelper: true, // これをtrueにすると範囲設定できます
+	 	  		slotLabelFormat:"HH:mm", // 日、週の左側のラベル表示
+	 	  		selectMinDistance: 1,
+//	 	  		events: function(start, end, timezone, callback) {
+//	 	           // ページロード時に表示するカレンダーデータ取得イベント
+//	 	           alert("kita1");
+//	 	        },
+	 	        eventClick: function(calEvent, jsEvent, view) {
+	 	           // カレンダーに設定したイベントクリック時のイベント
+		           $('#modalTitle').html(calEvent.title);
+                   $('#modalBody').html(calEvent.description);
+                   $('#calendarModal').modal();
+	 	        },
+	 	        dayClick: function(date, jsEvent, view) {
+	 	           // カレンダー空白部分クリック時のイベント
+                   $('#calendarModal').modal({backdrop:"static"});
+	 	        },
+	 	        select: function(start, end) {
+	 	           // カレンダー空白部分をドラッグして範囲指定した時のイベント
+		 	           alert("KITA4");
+	 	        },
+	 	        eventDrop: function(event, delta, revertFunc, jsEvent, ui, view) {
+	 	           // イベントをドラッグして別日に移動させた時のイベント
+		 	           alert("KITA5");
+	 	        }
+    		});
+    		
+    	    // 保存ボタンを押した時のイベント
+			$( "#btn_save" ).click(function() {
+				// 入力情報の取得
+    			var v_event_name=$("#dialog-form input#event_name").val();
+    			var v_event_day_from=$("#dialog-form input#event_day_from").val();
+				
+				$("#calendar").fullCalendar("addEventSource", [{
+			          title: v_event_name,
+			          start: v_event_day_from,
+			          end: '2018-07-06',
+			          allDay: false
+				}]);				
+				
+				$("#calendarModal").modal('hide');
+
+			});
+    	    
+        });
+    </script>
+  </body>
+</html>

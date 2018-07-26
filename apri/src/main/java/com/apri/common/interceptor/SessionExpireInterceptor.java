@@ -62,7 +62,7 @@ public class SessionExpireInterceptor implements HandlerInterceptor {
                     FlashMapManager flashMapManager = RequestContextUtils
                             .getFlashMapManager(request);
                     flashMapManager.saveOutputFlashMap(flashMap, request, response);
-                    response.sendRedirect(request.getContextPath() + "/error/session_timeout");
+// とりあえず　コメント                    response.sendRedirect(request.getContextPath() + "/error/session_timeout");
                    
                 }
             }
