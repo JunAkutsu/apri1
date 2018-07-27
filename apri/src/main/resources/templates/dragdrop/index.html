@@ -43,42 +43,48 @@
         <div class="modal-body">
 		  <div id="err_message"></div>
           <div class="modal-regist">
-            <div class="row modal-row">
+            <div class="form-group">
               <div class="input-group">
-                <input type="text" class="form-control event_name" name="event_name" id="event_name" placeholder="イベント名"  value="" /> 
+                <input type="text" class="form-control" name="event_name" id="event_name" placeholder="イベント名"  value="" /> 
               </div>
             </div>
-
             <div class="line-adjust"></div>
-            <div class="row modal-row">
-              <div class="input-group date" id="datetimepicker" data-target-input="nearest">
+            <div class="form-row2">
+              <div class="input-group col-3" id="datetimepicker" data-target-input="nearest">
                 <input type="text" class="form-control" name="event_day_from" id="event_day_from" placeholder="日付(From)"  value="" data-target="#datetimepicker" />
 				<div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker"> 
 			      <div class="input-group-text"><i class="fa fa-calendar"></i></div> 
 			    </div> 
               </div>
-            </div>
-            
-            <div class="line-adjust"></div>
-            <div class="row modal-row">
-              <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+	          <div class="line-adjust2"></div>
+              <div class="input-group col-2" id="datetimepicker2" data-target-input="nearest">
                 <input type="text" class="form-control" name="event_time_from" id="event_time_from" placeholder="時間(From)"  value="" data-target="#datetimepicker2" />
 				<div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker"> 
 			      <div class="input-group-text"><i class="fa fa-clock-o"></i></div> 
 			    </div> 
               </div>
+	          <div class="from_tilde_to">～</div>
+              <div class="input-group col-3" id="datetimepicker3" data-target-input="nearest">
+                <input type="text" class="form-control" name="event_day_to" id="event_day_to" placeholder="日付(To)"  value="" data-target="datetimepicker3" />
+				<div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker"> 
+			      <div class="input-group-text"><i class="fa fa-calendar"></i></div> 
+			    </div> 
+              </div>
+	          <div class="line-adjust2"></div>
+              <div class="input-group col-2" id="datetimepicker4" data-target-input="nearest">
+                <input type="text" class="form-control" name="event_time_to" id="event_time_to" placeholder="時間(To)"  value="" data-target="#datetimepicker4" />
+				<div class="input-group-append" data-target="#datetimepicker4" data-toggle="datetimepicker"> 
+			      <div class="input-group-text"><i class="fa fa-clock-o"></i></div> 
+			    </div> 
+              </div>
             </div>
+            <div class="line-adjust"></div>
+            <div class="form-group">
+         　　　　　　　　　<textarea class="form-control" name="detail_naiyou" id="detail_naiyou" placeholder="詳細" rows="5"></textarea>
+            </div>
+            
+            <div class="line-adjust"></div>
 
-            <div class="row modal-row">
-              <div class="input-group">
-                <input type="text" class="form-control event_day_to" name="event_day_to" id="event_day_to" placeholder="日付(To)"  value="">
-              </div>
-            </div>
-            <div class="row modal-row">
-              <div class="input-group">
-                <input type="text" class="form-control event_time_to" name="event_time_to" id="event_time_to" placeholder="時間"  value="">
-              </div>
-            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -89,7 +95,7 @@
     </div>
   </div></div>
 	<script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
-	<script type="text/javascript" th:src="@{/webjars/moment/2.22.2/min/moment.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/momentjs/2.22.2/min/moment.min.js}"></script>
 	<script type="text/javascript" th:src="@{/webjars/fullcalendar/3.8.0/fullcalendar.min.js}"></script>
 	<script type="text/javascript" th:src="@{/webjars/fullcalendar/3.8.0/locale/ja.js}"></script>
 	<script type="text/javascript" th:src="@{/webjars/bootstrap/4.0.0-1/js/bootstrap.min.js}"></script>
@@ -143,6 +149,52 @@
                 }
             });
     		
+    		$('#datetimepicker3').datetimepicker({
+                dayViewHeaderFormat: 'YYYY年 MMMM',
+                tooltips: {
+                    close: '閉じる',
+                    selectMonth: '月を選択',
+                    prevMonth: '前月',
+                    nextMonth: '次月',
+                    selectYear: '年を選択',
+                    prevYear: '前年',
+                    nextYear: '次年',
+                    selectTime: '時間を選択',
+                    selectDate: '日付を選択',
+                    prevDecade: '前期間',
+                    nextDecade: '次期間',
+                    selectDecade: '期間を選択',
+                    prevCentury: '前世紀',
+                    nextCentury: '次世紀'
+                },
+                format: 'YYYY/MM/DD',
+                locale: 'ja',
+                buttons: {
+	                showClose: true
+                }
+            });
+
+    		$('#datetimepicker4').datetimepicker({
+                tooltips: {
+                	close: '閉じる',
+                    pickHour: '時間を取得',
+                    incrementHour: '時間を増加',
+                    decrementHour: '時間を減少',
+                    pickMinute: '分を取得',
+                    incrementMinute: '分を増加',
+                    decrementMinute: '分を減少',
+                    pickSecond: '秒を取得',
+                    incrementSecond: '秒を増加',
+                    decrementSecond: '秒を減少',
+                    togglePeriod: '午前/午後切替',
+                    selectTime: '時間を選択'
+                },
+                format: 'HH:mm',
+                locale: 'ja',
+                buttons: {
+	                showClose: true
+                }
+            });
     		$('#calendar').fullCalendar({
     			header: {
     		          // fullcalendarのヘッダーに配置するボタン

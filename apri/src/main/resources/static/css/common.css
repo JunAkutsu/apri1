@@ -32,3 +32,29 @@
 .line-adjust{
 	margin-bottom:10px
 }
+.line-adjust2{
+	margin-right:10px
+}
+
+.form-row2 {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -5px;
+}
+
+#datetimepicker,
+#datetimepicker2,
+#datetimepicker3,
+#datetimepicker4 {
+	padding-right: 0px;
+    padding-left: 0px;
+}
+
+.from_tilde_to {
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-top: 5px;
+}
