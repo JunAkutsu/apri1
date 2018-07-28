@@ -214,16 +214,35 @@
 	 	  		selectable: true, // カレンダー空白部分のドラッグ可能
 	 	  		selectHelper: true, // これをtrueにすると範囲設定できます
 	 	  		slotLabelFormat:"HH:mm", // 日、週の左側のラベル表示
+	 	  		nextDayThreshold:"00:00:00", // 次の日扱いにする時刻
 	 	  		selectMinDistance: 1,
+	 	  		eventSources: [
+	 	            {
+	 	                events: [
+	 	                    {
+	 	                        title: 'event3',
+	 	                        start: '2018/07/05 12:00:00',
+	 	                        end: '2018/07/06 00:00:00',
+	 	                        allDay: false // will make the time show
+	 	                    }
+	 	                ]
+	 	            }
+	 	        ],
 //	 	  		events: function(start, end, timezone, callback) {
 //	 	           // ページロード時に表示するカレンダーデータ取得イベント
 //	 	           alert("kita1");
 //	 	        },
 	 	        eventClick: function(calEvent, jsEvent, view) {
 	 	           // カレンダーに設定したイベントクリック時のイベント
-		           $('#modalTitle').html(calEvent.title);
-                   $('#modalBody').html(calEvent.description);
-                   $('#calendarModal').modal();
+		           $("#dialog-form input#event_name").val(calEvent.title);
+				   var v_date_from = moment(calEvent.start);
+				   var v_date_to = moment(calEvent.end);
+		           $("#dialog-form input#event_day_from").val(v_date_from.format("YYYY/MM/DD")  );
+		           $("#dialog-form input#event_time_from").val(v_date_from.format("HH:mm")  );
+		           $("#dialog-form input#event_day_to").val(v_date_to.format("YYYY/MM/DD")  );
+		           $("#dialog-form input#event_time_to").val(v_date_to.format("HH:mm"));
+		           $("#dialog-form input#detail_naiyou").val();
+                   $('#calendarModal').modal({backdrop:"static"});
 	 	        },
 	 	        dayClick: function(date, jsEvent, view) {
 	 	           // カレンダー空白部分クリック時のイベント
@@ -244,15 +263,48 @@
 				// 入力情報の取得
     			var v_event_name=$("#dialog-form input#event_name").val();
     			var v_event_day_from=$("#dialog-form input#event_day_from").val();
-				
-				$("#calendar").fullCalendar("addEventSource", [{
-			          title: v_event_name,
-			          start: v_event_day_from,
-			          end: '2018-07-06',
-			          allDay: false
-				}]);				
-				
-				$("#calendarModal").modal('hide');
+    			var v_event_time_from=$("#dialog-form input#event_time_from").val();
+    			var v_event_day_to=$("#dialog-form input#event_day_to").val();
+    			var v_event_time_to=$("#dialog-form input#event_time_to").val();
+    			var v_detail_naiyou=$("#dialog-form textarea#detail_naiyou").val();
+    			
+    			// 送信データの設定
+				var v_data={'event_name':v_event_name,
+						    'event_day_from':v_event_day_from,
+						    'event_time_from':v_event_time_from,
+						    'event_day_to':v_event_day_to,
+						    'event_time_to':v_event_time_to,
+						    'detail_naiyou':v_detail_naiyou
+						    };
+
+    			// 入力情報の登録
+				$.ajax({
+					  type: "POST",
+	 				  url:'/drag/regist',
+	 				  contentType: "application/json;charset=UTF-8",
+					  data:JSON.stringify(v_data),
+					  dataType: "json"
+				}).done(function (data) {
+					var v_message =  "<div>input_vale="+data.event_name+"</div>"
+					$("#err_message").append(v_message);
+					alert(data.tantousya_renban);
+					$("#calendar").fullCalendar("addEventSource", [{
+				          title: v_event_name,
+				          start: moment(v_event_day_from + ' ' + v_event_time_from, "YYYY/MM/DD hh:mm"),
+				          end: moment(v_event_day_to + ' ' + v_event_time_to, "YYYY/MM/DD hh:mm"),
+				          detail_naiyou:v_detail_naiyou,
+				          allDay: false
+					}]);				
+					
+					$("#calendarModal").modal('hide');
+					
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					// エラーメッセージの取得
+					var v_message = "<div>" + jqXHR.responseText + "</div>";
+					// エラーメッセージの設定
+					$("#err_message").append(v_message);
+				});
+    			
 
 			});
     	    

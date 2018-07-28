@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.apri.dragdrop.YoteiMapper">
+    <insert id="insert" parameterType="com.apri.dragdrop.YoteiDomain">
+        INSERT INTO YOTEI (ID,TITLE,DETAIL_NAIYOU,START_DATE,START_TIME,END_DATE,END_TIME,SAKUJYO_FLG,TORUOKU_DT,TORUOKUSYA,KOUSIN_DT,KOUSINSYA) 
+        VALUES (NEXTVAL('seq_yotei'),#{event_name},#{detail_naiyou},#{event_day_from},#{event_time_from},#{event_day_to},#{event_time_to},'0',now(),1,now(),1)
+    </insert>
+</mapper>
