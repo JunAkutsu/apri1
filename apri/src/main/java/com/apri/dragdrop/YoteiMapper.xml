@@ -6,6 +6,41 @@
 <mapper namespace="com.apri.dragdrop.YoteiMapper">
     <insert id="insert" parameterType="com.apri.dragdrop.YoteiDomain">
         INSERT INTO YOTEI (ID,TITLE,DETAIL_NAIYOU,START_DATE,START_TIME,END_DATE,END_TIME,SAKUJYO_FLG,TORUOKU_DT,TORUOKUSYA,KOUSIN_DT,KOUSINSYA) 
-        VALUES (NEXTVAL('seq_yotei'),#{event_name},#{detail_naiyou},#{event_day_from},#{event_time_from},#{event_day_to},#{event_time_to},'0',now(),1,now(),1)
+        VALUES (#{id},#{event_name},#{detail_naiyou},#{event_day_from},#{event_time_from},#{event_day_to},#{event_time_to},'0',now(),1,now(),1)
     </insert>
+
+    <update id="update" parameterType="com.apri.dragdrop.YoteiDomain">
+        UPDATE YOTEI
+           SET TITLE=#{event_name},DETAIL_NAIYOU=#{detail_naiyou},START_DATE=#{event_day_from},START_TIME=#{event_time_from},
+           END_DATE=#{event_day_to},END_TIME=#{event_time_to},KOUSIN_DT=now(),KOUSINSYA=1 
+         WHERE ID = #{id}
+    </update>
+    
+    <update id="updateDays" parameterType="com.apri.dragdrop.YoteiDomain">
+        UPDATE YOTEI
+           SET START_DATE=#{event_day_from},END_DATE=#{event_day_to},KOUSIN_DT=now(),KOUSINSYA=1 
+         WHERE ID = #{id}
+    </update>
+    
+    <update id="delete" parameterType="Long">
+        UPDATE YOTEI
+           SET SAKUJYO_FLG='1',KOUSIN_DT=now(),KOUSINSYA=1 
+         WHERE ID = #{id}
+    </update>
+    
+    <select id="getId" resultType="com.apri.dragdrop.YoteiDomain">
+        SELECT NEXTVAL('seq_yotei') id
+    </select>
+    
+    <select id="getYotei" parameterType="Long" resultType="com.apri.dragdrop.YoteiDomain">
+        SELECT ID,
+               TITLE event_name,
+               DETAIL_NAIYOU,
+               START_DATE event_day_from,
+               START_TIME event_time_from,
+               END_DATE event_day_to,
+               END_TIME event_time_to
+          FROM YOTEI
+         WHERE ID = #{id}
+    </select>
 </mapper>

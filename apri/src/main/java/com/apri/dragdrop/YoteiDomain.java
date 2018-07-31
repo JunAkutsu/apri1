@@ -4,13 +4,27 @@ import java.time.LocalDate;
 
 public class YoteiDomain {
 
-	String event_name;
-	LocalDate event_day_from;
-	String event_time_from;
-	LocalDate event_day_to;
-	String event_time_to;
-	String detail_naiyou;
+	private int action_type;
+	private Long id;
+	private String event_name;
+	private LocalDate event_day_from;
+	private String event_time_from;
+	private LocalDate event_day_to;
+	private String event_time_to;
+	private String detail_naiyou;
 	
+	public int getAction_type() {
+		return action_type;
+	}
+	public void setAction_type(int action_type) {
+		this.action_type = action_type;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public String getEvent_name() {
 		return event_name;
 	}

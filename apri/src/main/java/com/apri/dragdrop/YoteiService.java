@@ -26,17 +26,29 @@ public class YoteiService {
 	@Autowired
 	YoteiMapper yoteiMapper;
 	
-//	@Transactional(readOnly=true)
-//	public List<TantousyaDomain> getTantousya_list(){
-//		return tantousyaMapper.selectAll();
-//	}
+	@Transactional(readOnly=true)
+	public YoteiDomain getYotei(Long id){
+		return yoteiMapper.getYotei(id);
+	}
+	
+	@Transactional
+	public YoteiDomain getId(){
+		return yoteiMapper.getId();
+	}
 	
 	// このメソッド内でExceptionが発生するとrollbackとなる。
 	@Transactional(rollbackForClassName = "Exception") 
 	public int executeCall(YoteiDomain input) {
 		int result = 0;
 		try {
-			yoteiMapper.insert(input);
+			if(input.getAction_type() == 1){
+				// 新規の場合
+				yoteiMapper.insert(input);
+			}
+			else{
+				// 修正の場合
+				yoteiMapper.update(input);
+			}
 		} catch (RuntimeException e) {
 			// TODO 自動生成された catch ブロック
 			throw e;
@@ -47,4 +59,35 @@ public class YoteiService {
 		return result;
 	}
 	
+	// このメソッド内でExceptionが発生するとrollbackとなる。
+	@Transactional(rollbackForClassName = "Exception") 
+	public int updateDays(YoteiDomain input) {
+		int result = 0;
+		try {
+			yoteiMapper.updateDays(input);
+		} catch (RuntimeException e) {
+			// TODO 自動生成された catch ブロック
+			throw e;
+		} catch (Exception e) {
+			// TODO 自動生成された catch ブロック
+			throw new ApplicationException(e);
+		}
+		return result;
+	}
+	
+	// このメソッド内でExceptionが発生するとrollbackとなる。
+	@Transactional(rollbackForClassName = "Exception") 
+	public int delete(Long id) {
+		int result = 0;
+		try {
+			yoteiMapper.delete(id);
+		} catch (RuntimeException e) {
+			// TODO 自動生成された catch ブロック
+			throw e;
+		} catch (Exception e) {
+			// TODO 自動生成された catch ブロック
+			throw new ApplicationException(e);
+		}
+		return result;
+	}
 }

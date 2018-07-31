@@ -14,6 +14,7 @@
   <body>
 	<h1>ドラッグドロップ1</h1>
  	<div id="contents" class="container-fluid">
+      <div id="err_message_main"></div>
 	  <div class="row">
 	    <div class="col-xs-12">
 	      <div class="panel">
@@ -40,6 +41,8 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
       </div>
       <form method="post" id="dialog-form">
+        <input type="hidden" name="action_type" id="action_type" value="" />
+        <input type="hidden" name="id" id="id" value="" />
         <div class="modal-body">
 		  <div id="err_message"></div>
           <div class="modal-regist">
@@ -89,6 +92,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" id="btn_save" class="btn btn-primary">登録</button>
+          <button type="button" id="btn_delete" class="btn btn-primary">削除</button>
           <button type="button" class="btn btn-primary" data-dismiss="modal">閉じる</button>
         </div>
  	  </form>
@@ -234,33 +238,124 @@
 //	 	        },
 	 	        eventClick: function(calEvent, jsEvent, view) {
 	 	           // カレンダーに設定したイベントクリック時のイベント
-		           $("#dialog-form input#event_name").val(calEvent.title);
-				   var v_date_from = moment(calEvent.start);
-				   var v_date_to = moment(calEvent.end);
-		           $("#dialog-form input#event_day_from").val(v_date_from.format("YYYY/MM/DD")  );
-		           $("#dialog-form input#event_time_from").val(v_date_from.format("HH:mm")  );
-		           $("#dialog-form input#event_day_to").val(v_date_to.format("YYYY/MM/DD")  );
-		           $("#dialog-form input#event_time_to").val(v_date_to.format("HH:mm"));
-		           $("#dialog-form input#detail_naiyou").val();
-                   $('#calendarModal').modal({backdrop:"static"});
+	 	           // 取得データの設定
+				   var v_data={'id':calEvent.id,
+							    };
+
+	    		   // 入力情報の登録
+				   $.ajax({
+						  type: "POST",
+		 				  url:'/drag/modify',
+		 				  contentType: "application/json;charset=UTF-8",
+						  data:JSON.stringify(v_data),
+						  dataType: "json"
+				   }).done(function (data) {
+						// 画面の表示値の設定
+		    			$("#dialog-form input#id").val(calEvent.id);
+		    			$("#dialog-form input#event_name").val(data.event_name);
+		    			$("#dialog-form input#event_day_from").val(data.event_day_from);
+		    			$("#dialog-form input#event_time_from").val(data.event_time_from);
+		    			$("#dialog-form input#event_day_to").val(data.event_day_to);
+		    			$("#dialog-form input#event_time_to").val(data.event_time_to);
+		    			$("#dialog-form textarea#detail_naiyou").val(data.detail_naiyou);
+		    			$("#dialog-form input#action_type").val("2"); // 修正
+						
+			 	        // 画面の表示
+						$("#dialog-form #btn_save").prop("disabled", false);
+	                    $("#dialog-form #btn_delete").show();
+		                $('#calendarModal').modal({backdrop:"static"});
+						
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+						// エラーメッセージの取得
+						var v_message = "<div>" + jqXHR.responseText + "</div>";
+						// エラーメッセージの設定
+						$("#err_message").append(v_message);
+						
+						// 二重送信制御
+						$("#dialog-form #btn_save").prop("disabled", false);
+
+			 	        // 画面の表示
+	                    $("#dialog-form #btn_delete").show();
+	                    $('#calendarModal').modal({backdrop:"static"});
+			       });
+	 	           
 	 	        },
 	 	        dayClick: function(date, jsEvent, view) {
 	 	           // カレンダー空白部分クリック時のイベント
+	 	           
+					// 初期化
+	    			$("#dialog-form input#id").val("");
+	    			$("#dialog-form input#event_name").val("");
+	    			$("#dialog-form input#event_day_from").val("");
+	    			$("#dialog-form input#event_time_from").val("");
+	    			$("#dialog-form input#event_day_to").val("");
+	    			$("#dialog-form input#event_time_to").val("");
+	    			$("#dialog-form textarea#detail_naiyou").val("");
+	    			$("#dialog-form input#action_type").val("1"); // 新規
+	    			
+	 	           // 画面の表示
+				   $("#dialog-form #btn_save").prop("disabled", false);
+                   $("#dialog-form #btn_delete").hide();
                    $('#calendarModal').modal({backdrop:"static"});
 	 	        },
 	 	        select: function(start, end) {
 	 	           // カレンダー空白部分をドラッグして範囲指定した時のイベント
-		 	           alert("KITA4");
+	 	           
+					// 初期化
+	    			$("#dialog-form input#id").val("");
+	    			$("#dialog-form input#event_name").val("");
+	    			$("#dialog-form input#event_day_from").val(start.format("YYYY/MM/DD"));
+	    			$("#dialog-form input#event_time_from").val("");
+	    			// endが+1で表示されるので、-1を実施する。
+	    			$("#dialog-form input#event_day_to").val(end.add('days', -1).format("YYYY/MM/DD"));
+	    			$("#dialog-form input#event_time_to").val("");
+	    			$("#dialog-form textarea#detail_naiyou").val("");
+	    			$("#dialog-form input#action_type").val("1"); // 新規
+	    			
+	 	           // 画面の表示
+				   $("#dialog-form #btn_save").prop("disabled", false);
+	               $("#dialog-form #btn_delete").hide();
+	               $('#calendarModal').modal({backdrop:"static"});
 	 	        },
 	 	        eventDrop: function(event, delta, revertFunc, jsEvent, ui, view) {
 	 	           // イベントをドラッグして別日に移動させた時のイベント
-		 	           alert("KITA5");
+					// 入力情報の取得
+	    			var v_id=event.id;
+	    			var v_event_day_from=event.start.format("YYYY/MM/DD");
+	    			var v_event_day_to=event.end.format("YYYY/MM/DD");
+		    			
+	    			// 送信データの設定
+					var v_data={'id':v_id,
+							    'event_day_from':v_event_day_from,
+							    'event_day_to':v_event_day_to,
+							    };
+
+	    			// 入力情報の登録
+					$.ajax({
+						  type: "POST",
+		 				  url:'/drag/changeDays',
+		 				  contentType: "application/json;charset=UTF-8",
+						  data:JSON.stringify(v_data),
+						  dataType: "json"
+					}).done(function (data) {
+							
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+						// エラーメッセージの取得
+						var v_message = "<div>" + jqXHR.responseText + "</div>";
+						// エラーメッセージの設定
+						$("#err_message_main").append(v_message);
+					});
 	 	        }
     		});
     		
     	    // 保存ボタンを押した時のイベント
 			$( "#btn_save" ).click(function() {
+				// 二重送信制御
+				$("#dialog-form #btn_save").prop("disabled", true);
+				
 				// 入力情報の取得
+    			var v_action_type=$("#dialog-form input#action_type").val();
+    			var v_id=$("#dialog-form input#id").val();
     			var v_event_name=$("#dialog-form input#event_name").val();
     			var v_event_day_from=$("#dialog-form input#event_day_from").val();
     			var v_event_time_from=$("#dialog-form input#event_time_from").val();
@@ -274,7 +369,9 @@
 						    'event_time_from':v_event_time_from,
 						    'event_day_to':v_event_day_to,
 						    'event_time_to':v_event_time_to,
-						    'detail_naiyou':v_detail_naiyou
+						    'detail_naiyou':v_detail_naiyou,
+						    'action_type':v_action_type,
+						    'id':v_id,
 						    };
 
     			// 入力情報の登録
@@ -285,17 +382,29 @@
 					  data:JSON.stringify(v_data),
 					  dataType: "json"
 				}).done(function (data) {
-					var v_message =  "<div>input_vale="+data.event_name+"</div>"
-					$("#err_message").append(v_message);
-					alert(data.tantousya_renban);
-					$("#calendar").fullCalendar("addEventSource", [{
-				          title: v_event_name,
-				          start: moment(v_event_day_from + ' ' + v_event_time_from, "YYYY/MM/DD hh:mm"),
-				          end: moment(v_event_day_to + ' ' + v_event_time_to, "YYYY/MM/DD hh:mm"),
-				          detail_naiyou:v_detail_naiyou,
-				          allDay: false
-					}]);				
-					
+					// カレンダーへの登録
+					if(v_action_type==1){
+						// 新規の場合
+						$("#calendar").fullCalendar("addEventSource", [{
+							  id:data.id,
+					          title: v_event_name,
+					          start: moment(v_event_day_from + ' ' + v_event_time_from, "YYYY/MM/DD hh:mm"),
+					          end: moment(v_event_day_to + ' ' + v_event_time_to, "YYYY/MM/DD hh:mm"),
+					          allDay: false
+						}]);				
+					}
+					else{
+						// 修正の場合
+						$("#calendar").fullCalendar("removeEvents",data.id);		
+						$("#calendar").fullCalendar("addEventSource", [{
+							  id:data.id,
+					          title: v_event_name,
+					          start: moment(v_event_day_from + ' ' + v_event_time_from, "YYYY/MM/DD hh:mm"),
+					          end: moment(v_event_day_to + ' ' + v_event_time_to, "YYYY/MM/DD hh:mm"),
+					          allDay: false
+						}]);				
+					}
+	 	             // 画面の非表示
 					$("#calendarModal").modal('hide');
 					
 				}).fail(function(jqXHR, textStatus, errorThrown) {
@@ -303,11 +412,59 @@
 					var v_message = "<div>" + jqXHR.responseText + "</div>";
 					// エラーメッセージの設定
 					$("#err_message").append(v_message);
+					
+					// 二重送信制御
+					$("#dialog-form #btn_save").prop("disabled", false);
 				});
-    			
-
 			});
     	    
+    	    // 削除ボタンを押した時のイベント
+			$( "#btn_delete" ).click(function() {
+				// 二重送信制御
+				$("#dialog-form #btn_delete").prop("disabled", true);
+				
+				// 入力情報の取得
+    			var v_id=$("#dialog-form input#id").val();
+    			var v_event_name=$("#dialog-form input#event_name").val();
+    			var v_event_day_from=$("#dialog-form input#event_day_from").val();
+    			var v_event_time_from=$("#dialog-form input#event_time_from").val();
+    			var v_event_day_to=$("#dialog-form input#event_day_to").val();
+    			var v_event_time_to=$("#dialog-form input#event_time_to").val();
+    			var v_detail_naiyou=$("#dialog-form textarea#detail_naiyou").val();
+    			
+    			// 送信データの設定
+				var v_data={'event_name':v_event_name,
+						    'event_day_from':v_event_day_from,
+						    'event_time_from':v_event_time_from,
+						    'event_day_to':v_event_day_to,
+						    'event_time_to':v_event_time_to,
+						    'detail_naiyou':v_detail_naiyou,
+						    'id':v_id,
+						    };
+
+    			// 入力情報の登録
+				$.ajax({
+					  type: "POST",
+	 				  url:'/drag/delete',
+	 				  contentType: "application/json;charset=UTF-8",
+					  data:JSON.stringify(v_data),
+					  dataType: "json"
+				}).done(function (data) {
+					// カレンダーの削除
+					$("#calendar").fullCalendar("removeEvents",data.id);		
+	 	             // 画面の非表示
+					$("#calendarModal").modal('hide');
+					
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					// エラーメッセージの取得
+					var v_message = "<div>" + jqXHR.responseText + "</div>";
+					// エラーメッセージの設定
+					$("#err_message").append(v_message);
+					
+					// 二重送信制御
+					$("#dialog-form #btn_delete").prop("disabled", false);
+				});
+			});
         });
     </script>
   </body>

@@ -9,6 +9,8 @@ public class YoteiBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	int action_type;
+	Long id;
 	String event_name;
 	String event_day_from;
 	String event_time_from;
@@ -16,6 +18,18 @@ public class YoteiBean implements Serializable {
 	String event_time_to;
 	String detail_naiyou;
 	
+	public int getAction_type() {
+		return action_type;
+	}
+	public void setAction_type(int action_type) {
+		this.action_type = action_type;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public String getDetail_naiyou() {
 		return detail_naiyou;
 	}
