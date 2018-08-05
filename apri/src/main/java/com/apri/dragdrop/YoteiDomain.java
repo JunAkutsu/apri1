@@ -1,18 +1,34 @@
 package com.apri.dragdrop;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class YoteiDomain {
 
 	private int action_type;
 	private Long id;
 	private String event_name;
-	private LocalDate event_day_from;
+	private LocalDateTime event_day_from;
 	private String event_time_from;
-	private LocalDate event_day_to;
+	private LocalDateTime event_day_to;
 	private String event_time_to;
 	private String detail_naiyou;
 	
+	private String event_day_from_s;
+	private String event_day_to_s;
+	
+	public String getEvent_day_from_s() {
+		return event_day_from_s;
+	}
+	public void setEvent_day_from_s(String event_day_from_s) {
+		this.event_day_from_s = event_day_from_s;
+	}
+	public String getEvent_day_to_s() {
+		return event_day_to_s;
+	}
+	public void setEvent_day_to_s(String event_day_to_s) {
+		this.event_day_to_s = event_day_to_s;
+	}
 	public int getAction_type() {
 		return action_type;
 	}
@@ -31,10 +47,10 @@ public class YoteiDomain {
 	public void setEvent_name(String event_name) {
 		this.event_name = event_name;
 	}
-	public LocalDate getEvent_day_from() {
+	public LocalDateTime getEvent_day_from() {
 		return event_day_from;
 	}
-	public void setEvent_day_from(LocalDate event_day_from) {
+	public void setEvent_day_from(LocalDateTime event_day_from) {
 		this.event_day_from = event_day_from;
 	}
 	public String getEvent_time_from() {
@@ -43,10 +59,10 @@ public class YoteiDomain {
 	public void setEvent_time_from(String event_time_from) {
 		this.event_time_from = event_time_from;
 	}
-	public LocalDate getEvent_day_to() {
+	public LocalDateTime getEvent_day_to() {
 		return event_day_to;
 	}
-	public void setEvent_day_to(LocalDate event_day_to) {
+	public void setEvent_day_to(LocalDateTime event_day_to) {
 		this.event_day_to = event_day_to;
 	}
 	public String getEvent_time_to() {

@@ -211,7 +211,8 @@
     		        },
 
    		        timeFormat: 'HH:mm', // 時間表示フォーマット
-	   		    timezone: 'Asia/Tokyo', // タイムゾーン設定
+//	   		    timezone: 'Asia/Tokyo', // タイムゾーン設定
+	   		    timezone: 'UTC', // タイムゾーン設定
 	 	  		eventLimit: true, // イベント増えた時にリンクボタン表示
 	 	  		editable: true, // 編集可能設定
 	 	  		slotEventOverlap: true, // イベントの見た目を重ねて表示
@@ -220,29 +221,47 @@
 	 	  		slotLabelFormat:"HH:mm", // 日、週の左側のラベル表示
 	 	  		nextDayThreshold:"00:00:00", // 次の日扱いにする時刻
 	 	  		selectMinDistance: 1,
-	 	  		eventSources: [
-	 	            {
-	 	                events: [
-	 	                    {
-	 	                        title: 'event3',
-	 	                        start: '2018/07/05 12:00:00',
-	 	                        end: '2018/07/06 00:00:00',
-	 	                        allDay: false // will make the time show
-	 	                    }
-	 	                ]
-	 	            }
-	 	        ],
-//	 	  		events: function(start, end, timezone, callback) {
-//	 	           // ページロード時に表示するカレンダーデータ取得イベント
-//	 	           alert("kita1");
-//	 	        },
+	 	  		events: function(start, end, timezone, callback) {
+	 	           // ページロード時に表示するカレンダーデータ取得イベント
+				   // 取得データの設定
+				   alert(start);
+				   alert(end);
+				   var v_data={'event_day_from':start.format("YYYY/MM/DD"),
+						       'event_day_to':end.add('days', -1).format("YYYY/MM/DD"),
+					   };
+
+	    		   // 入力情報の取得
+				   $.ajax({
+						  type: "POST",
+		 				  url:'/drag/search_calender_list',
+		 				  contentType: "application/json;charset=UTF-8",
+						  data:JSON.stringify(v_data),
+						  dataType: "json"
+				   }).done(function (list) {
+					   var events = [];
+					   $.each(list,function(index,data) {
+						   events.push({id:data.id,
+							        title: data.event_name,
+							        start: moment.utc(data.event_day_from_s+data.event_time_from, "YYYY/MM/DDhh:mm"),
+							        end: moment.utc(data.event_day_to_s+data.event_time_to, "YYYY/MM/DDhh:mm"),
+							        allDay: false
+							      });
+					  	});
+						callback(events);
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+						// エラーメッセージの取得
+						var v_message = "<div>" + jqXHR.responseText + "</div>";
+						// エラーメッセージの設定
+						$("#err_message_main").append(v_message);
+			       });
+	 	  		},
 	 	        eventClick: function(calEvent, jsEvent, view) {
 	 	           // カレンダーに設定したイベントクリック時のイベント
 	 	           // 取得データの設定
 				   var v_data={'id':calEvent.id,
 							    };
 
-	    		   // 入力情報の登録
+	    		   // 入力情報の取得
 				   $.ajax({
 						  type: "POST",
 		 				  url:'/drag/modify',
@@ -282,7 +301,7 @@
 	 	        },
 	 	        dayClick: function(date, jsEvent, view) {
 	 	           // カレンダー空白部分クリック時のイベント
-	 	           
+	 	           alert("sinki");
 					// 初期化
 	    			$("#dialog-form input#id").val("");
 	    			$("#dialog-form input#event_name").val("");
@@ -300,7 +319,9 @@
 	 	        },
 	 	        select: function(start, end) {
 	 	           // カレンダー空白部分をドラッグして範囲指定した時のイベント
-	 	           
+	 	           alert("select");
+	 	           alert(start);
+	 	           alert(end);
 					// 初期化
 	    			$("#dialog-form input#id").val("");
 	    			$("#dialog-form input#event_name").val("");
@@ -319,15 +340,20 @@
 	 	        },
 	 	        eventDrop: function(event, delta, revertFunc, jsEvent, ui, view) {
 	 	           // イベントをドラッグして別日に移動させた時のイベント
+	 	           alert("eventDrop");
 					// 入力情報の取得
 	    			var v_id=event.id;
 	    			var v_event_day_from=event.start.format("YYYY/MM/DD");
 	    			var v_event_day_to=event.end.format("YYYY/MM/DD");
-		    			
+	    			var v_event_time_from=event.start.format("HH:mm");
+	    			var v_event_time_to=event.end.format("HH:mm");
+
 	    			// 送信データの設定
 					var v_data={'id':v_id,
 							    'event_day_from':v_event_day_from,
 							    'event_day_to':v_event_day_to,
+							    'event_time_from':v_event_time_from,
+							    'event_time_to':v_event_time_to,
 							    };
 
 	    			// 入力情報の登録
@@ -345,7 +371,41 @@
 						// エラーメッセージの設定
 						$("#err_message_main").append(v_message);
 					});
-	 	        }
+	 	        },
+	 	        eventResize: function(event, jsEvent, ui, view) {
+		 	           // イベントをドラッグして別日に移動させた時のイベント
+		 	           alert("eventReisize");
+						// 入力情報の取得
+		    			var v_id=event.id;
+		    			var v_event_day_from=event.start.format("YYYY/MM/DD");
+		    			var v_event_day_to=event.end.format("YYYY/MM/DD");
+		    			var v_event_time_from=event.start.format("HH:mm");
+		    			var v_event_time_to=event.end.format("HH:mm");
+
+		    			// 送信データの設定
+						var v_data={'id':v_id,
+								    'event_day_from':v_event_day_from,
+								    'event_day_to':v_event_day_to,
+								    'event_time_from':v_event_time_from,
+								    'event_time_to':v_event_time_to,
+								    };
+
+		    			// 入力情報の登録
+						$.ajax({
+							  type: "POST",
+			 				  url:'/drag/changeDays',
+			 				  contentType: "application/json;charset=UTF-8",
+							  data:JSON.stringify(v_data),
+							  dataType: "json"
+						}).done(function (data) {
+								
+						}).fail(function(jqXHR, textStatus, errorThrown) {
+							// エラーメッセージの取得
+							var v_message = "<div>" + jqXHR.responseText + "</div>";
+							// エラーメッセージの設定
+							$("#err_message_main").append(v_message);
+						});
+		 	    }
     		});
     		
     	    // 保存ボタンを押した時のイベント
@@ -388,8 +448,8 @@
 						$("#calendar").fullCalendar("addEventSource", [{
 							  id:data.id,
 					          title: v_event_name,
-					          start: moment(v_event_day_from + ' ' + v_event_time_from, "YYYY/MM/DD hh:mm"),
-					          end: moment(v_event_day_to + ' ' + v_event_time_to, "YYYY/MM/DD hh:mm"),
+					          start: moment.utc(v_event_day_to + v_event_time_from, "YYYY/MM/DDhh:mm"),
+					          end: moment.utc(v_event_day_to + v_event_time_to, "YYYY/MM/DDhh:mm"),
 					          allDay: false
 						}]);				
 					}
@@ -399,8 +459,8 @@
 						$("#calendar").fullCalendar("addEventSource", [{
 							  id:data.id,
 					          title: v_event_name,
-					          start: moment(v_event_day_from + ' ' + v_event_time_from, "YYYY/MM/DD hh:mm"),
-					          end: moment(v_event_day_to + ' ' + v_event_time_to, "YYYY/MM/DD hh:mm"),
+					          start: moment.utc(v_event_day_to + v_event_time_from, "YYYY/MM/DDhh:mm"),
+					          end: moment.utc(v_event_day_to + v_event_time_to, "YYYY/MM/DDhh:mm"),
 					          allDay: false
 						}]);				
 					}

@@ -20,4 +20,5 @@ public interface YoteiMapper {
 	void delete(Long id);
 	YoteiDomain getId();
 	YoteiDomain getYotei(Long id);
+	List<YoteiDomain> getYoteiList(YoteiDomain input);
 }

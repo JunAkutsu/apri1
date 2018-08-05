@@ -31,6 +31,11 @@ public class YoteiService {
 		return yoteiMapper.getYotei(id);
 	}
 	
+	@Transactional(readOnly=true)
+	public List<YoteiDomain> getYoteiList(YoteiDomain input){
+		return yoteiMapper.getYoteiList(input);
+	}
+	
 	@Transactional
 	public YoteiDomain getId(){
 		return yoteiMapper.getId();

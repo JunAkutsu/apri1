@@ -37,6 +37,32 @@ public class RegistContainerLogic {
         return "dragdrop/index";
 	}
 	
+	@RequestMapping(value="/search_calender_list",consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,method=RequestMethod.POST)
+	@ResponseBody
+	public String ajax_search_calender_list(@RequestBody YoteiBean yoteiBean){
+		// 初期化
+		// new GsonBuilderを使用すると値がNULLの場合もJSONに出力される。
+		// new GSONを使用すると値がNULLの場合は、JSONから外される。
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		HashMap v_result = new HashMap();
+		
+		// 予定リストの取得
+		String v_event_day_from = null;
+		String v_event_day_to = null;
+		v_event_day_from = yoteiBean.getEvent_day_from();
+		v_event_day_to = yoteiBean.getEvent_day_to();
+		YoteiDomain input = new YoteiDomain();
+		input.setEvent_day_from_s(v_event_day_from);
+		input.setEvent_day_to_s(v_event_day_to);
+		
+		List<YoteiDomain> yotei_list = yoteiService.getYoteiList(input);
+		
+		// ログ出力
+		Logger logger = LoggerFactory.getLogger(RegistContainerLogic.class);
+		
+		return gson.toJson(yotei_list);
+	}
+	
 	@RequestMapping(value="/regist",consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,method=RequestMethod.POST)
 	@ResponseBody
 	public String ajax_regist(@RequestBody YoteiBean yoteiBean){
@@ -44,15 +70,15 @@ public class RegistContainerLogic {
 		// new GsonBuilderを使用すると値がNULLの場合もJSONに出力される。
 		// new GSONを使用すると値がNULLの場合は、JSONから外される。
 		Gson gson = new GsonBuilder().serializeNulls().create();
-		LocalDate v_event_day_from = null;
-		LocalDate v_event_day_to = null;
+		LocalDateTime v_event_day_from = null;
+		LocalDateTime v_event_day_to = null;
 		HashMap v_result = new HashMap();
 		YoteiDomain input = null;
 		
 		// date型の取得
-		v_event_day_from = LocalDate.parse(yoteiBean.getEvent_day_from(), DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+		v_event_day_from = LocalDateTime.parse(yoteiBean.getEvent_day_from()+yoteiBean.getEvent_time_from(), DateTimeFormatter.ofPattern("yyyy/MM/ddHH:mm"));
 		if(yoteiBean.getEvent_day_to()!=null && yoteiBean.getEvent_day_to()!=""){
-			v_event_day_to = LocalDate.parse(yoteiBean.getEvent_day_to(), DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+			v_event_day_to = LocalDateTime.parse(yoteiBean.getEvent_day_to()+yoteiBean.getEvent_time_to(), DateTimeFormatter.ofPattern("yyyy/MM/ddHH:mm"));
 		}
 		
 		// 新規/修正の判定
@@ -113,20 +139,9 @@ public class RegistContainerLogic {
 		
 		v_result.put("id", yoteiInfo.getId());
 		v_result.put("event_name", yoteiInfo.getEvent_name());
-		
-		String v_event_day_from=null;
-		String v_event_day_to=null;
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-		
-		if(yoteiInfo.getEvent_day_from() != null){
-			v_event_day_from = yoteiInfo.getEvent_day_from().format(formatter);
-		}
-		if(yoteiInfo.getEvent_day_from() != null){
-			v_event_day_to = yoteiInfo.getEvent_day_to().format(formatter);
-		}
-		v_result.put("event_day_from", v_event_day_from);
+		v_result.put("event_day_from", yoteiInfo.getEvent_day_from_s());
 		v_result.put("event_time_from", yoteiInfo.getEvent_time_from());
-		v_result.put("event_day_to", v_event_day_to);
+		v_result.put("event_day_to", yoteiInfo.getEvent_day_to_s());
 		v_result.put("event_time_to", yoteiInfo.getEvent_time_to());
 		v_result.put("detail_naiyou", yoteiInfo.getDetail_naiyou());
 
@@ -135,20 +150,20 @@ public class RegistContainerLogic {
 	
 	@RequestMapping(value="/changeDays",consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,method=RequestMethod.POST)
 	@ResponseBody
-	public String ajax_changeEvent(@RequestBody YoteiBean yoteiBean){
+	public String ajax_changeDays(@RequestBody YoteiBean yoteiBean){
 		// 初期化
 		// new GsonBuilderを使用すると値がNULLの場合もJSONに出力される。
 		// new GSONを使用すると値がNULLの場合は、JSONから外される。
 		Gson gson = new GsonBuilder().serializeNulls().create();
-		LocalDate v_event_day_from = null;
-		LocalDate v_event_day_to = null;
+		LocalDateTime v_event_day_from = null;
+		LocalDateTime v_event_day_to = null;
 		HashMap v_result = new HashMap();
 		YoteiDomain input = null;
 		
 		// date型の取得
-		v_event_day_from = LocalDate.parse(yoteiBean.getEvent_day_from(), DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+		v_event_day_from = LocalDateTime.parse(yoteiBean.getEvent_day_from()+yoteiBean.getEvent_time_from(), DateTimeFormatter.ofPattern("yyyy/MM/ddHH:mm"));
 		if(yoteiBean.getEvent_day_to()!=null && yoteiBean.getEvent_day_to()!=""){
-			v_event_day_to = LocalDate.parse(yoteiBean.getEvent_day_to(), DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+			v_event_day_to = LocalDateTime.parse(yoteiBean.getEvent_day_to()+yoteiBean.getEvent_time_to(), DateTimeFormatter.ofPattern("yyyy/MM/ddHH:mm"));
 		}
 
 		// 日付の更新
