@@ -224,10 +224,9 @@
 	 	  		events: function(start, end, timezone, callback) {
 	 	           // ページロード時に表示するカレンダーデータ取得イベント
 				   // 取得データの設定
-				   alert(start);
 				   alert(end);
 				   var v_data={'event_day_from':start.format("YYYY/MM/DD"),
-						       'event_day_to':end.add('days', -1).format("YYYY/MM/DD"),
+						       'event_day_to':end.add('days', -1).format("YYYY/MM/DD"), 
 					   };
 
 	    		   // 入力情報の取得
@@ -299,7 +298,7 @@
 			       });
 	 	           
 	 	        },
-	 	        dayClick: function(date, jsEvent, view) {
+	 	        dayClick: function(date, jsEvent, view,agendaDay) {
 	 	           // カレンダー空白部分クリック時のイベント
 	 	           alert("sinki");
 					// 初期化
@@ -317,18 +316,21 @@
                    $("#dialog-form #btn_delete").hide();
                    $('#calendarModal').modal({backdrop:"static"});
 	 	        },
-	 	        select: function(start, end) {
+	 	        select: function(start, end,jsEvent,view) {
 	 	           // カレンダー空白部分をドラッグして範囲指定した時のイベント
 	 	           alert("select");
-	 	           alert(start);
-	 	           alert(end);
 					// 初期化
 	    			$("#dialog-form input#id").val("");
 	    			$("#dialog-form input#event_name").val("");
 	    			$("#dialog-form input#event_day_from").val(start.format("YYYY/MM/DD"));
 	    			$("#dialog-form input#event_time_from").val("");
-	    			// endが+1で表示されるので、-1を実施する。
-	    			$("#dialog-form input#event_day_to").val(end.add('days', -1).format("YYYY/MM/DD"));
+	    			// 月の場合、endが+1で表示されるので、-1を実施する。
+	    			if(view.type=="month"){
+		    			$("#dialog-form input#event_day_to").val(end.add('days', -1).format("YYYY/MM/DD"));
+	    			}
+	    			else{
+		    			$("#dialog-form input#event_day_to").val(end.format("YYYY/MM/DD"));
+	    			}
 	    			$("#dialog-form input#event_time_to").val("");
 	    			$("#dialog-form textarea#detail_naiyou").val("");
 	    			$("#dialog-form input#action_type").val("1"); // 新規
