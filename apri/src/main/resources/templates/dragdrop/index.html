@@ -15,23 +15,7 @@
 	<h1>ドラッグドロップ1</h1>
  	<div id="contents" class="container-fluid">
       <div id="err_message_main"></div>
-	  <div class="row">
-	    <div class="col-xs-12">
-	      <div class="panel">
-	        <div class="panel-heading">
-			          スケジュール表
-    	    </div>
-  		    <div class="panel-body">
-	          <!-- メッセージ表示したい時はこの辺に -->
-	          <div class="row">
-    	        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
- 				   <div id="calendar"></div>　<!-- ここがカレンダー表示部分 -->
-            	</div>
-          	  </div>
-        	</div>
-      	  </div>
-        </div>
-      </div>
+      <div id="calendar"></div>　<!-- ここがカレンダー表示部分 -->
     </div>          	
 <div id="calendarModal" class="modal fade">
   <div class="modal-dialog">
@@ -224,7 +208,6 @@
 	 	  		events: function(start, end, timezone, callback) {
 	 	           // ページロード時に表示するカレンダーデータ取得イベント
 				   // 取得データの設定
-				   alert(end);
 				   var v_data={'event_day_from':start.format("YYYY/MM/DD"),
 						       'event_day_to':end.add('days', -1).format("YYYY/MM/DD"), 
 					   };
@@ -281,6 +264,7 @@
 			 	        // 画面の表示
 						$("#dialog-form #btn_save").prop("disabled", false);
 	                    $("#dialog-form #btn_delete").show();
+						$("#dialog-form #btn_delete").prop("disabled", false);
 		                $('#calendarModal').modal({backdrop:"static"});
 						
 					}).fail(function(jqXHR, textStatus, errorThrown) {
@@ -291,6 +275,8 @@
 						
 						// 二重送信制御
 						$("#dialog-form #btn_save").prop("disabled", false);
+	                    $("#dialog-form #btn_delete").show();
+						$("#dialog-form #btn_delete").prop("disabled", false);
 
 			 	        // 画面の表示
 	                    $("#dialog-form #btn_delete").show();
@@ -300,7 +286,6 @@
 	 	        },
 	 	        dayClick: function(date, jsEvent, view,agendaDay) {
 	 	           // カレンダー空白部分クリック時のイベント
-	 	           alert("sinki");
 					// 初期化
 	    			$("#dialog-form input#id").val("");
 	    			$("#dialog-form input#event_name").val("");
@@ -318,7 +303,6 @@
 	 	        },
 	 	        select: function(start, end,jsEvent,view) {
 	 	           // カレンダー空白部分をドラッグして範囲指定した時のイベント
-	 	           alert("select");
 					// 初期化
 	    			$("#dialog-form input#id").val("");
 	    			$("#dialog-form input#event_name").val("");
@@ -342,7 +326,6 @@
 	 	        },
 	 	        eventDrop: function(event, delta, revertFunc, jsEvent, ui, view) {
 	 	           // イベントをドラッグして別日に移動させた時のイベント
-	 	           alert("eventDrop");
 					// 入力情報の取得
 	    			var v_id=event.id;
 	    			var v_event_day_from=event.start.format("YYYY/MM/DD");
@@ -376,7 +359,6 @@
 	 	        },
 	 	        eventResize: function(event, jsEvent, ui, view) {
 		 	           // イベントをドラッグして別日に移動させた時のイベント
-		 	           alert("eventReisize");
 						// 入力情報の取得
 		    			var v_id=event.id;
 		    			var v_event_day_from=event.start.format("YYYY/MM/DD");
@@ -450,7 +432,7 @@
 						$("#calendar").fullCalendar("addEventSource", [{
 							  id:data.id,
 					          title: v_event_name,
-					          start: moment.utc(v_event_day_to + v_event_time_from, "YYYY/MM/DDhh:mm"),
+					          start: moment.utc(v_event_day_from + v_event_time_from, "YYYY/MM/DDhh:mm"),
 					          end: moment.utc(v_event_day_to + v_event_time_to, "YYYY/MM/DDhh:mm"),
 					          allDay: false
 						}]);				
@@ -461,7 +443,7 @@
 						$("#calendar").fullCalendar("addEventSource", [{
 							  id:data.id,
 					          title: v_event_name,
-					          start: moment.utc(v_event_day_to + v_event_time_from, "YYYY/MM/DDhh:mm"),
+					          start: moment.utc(v_event_day_from + v_event_time_from, "YYYY/MM/DDhh:mm"),
 					          end: moment.utc(v_event_day_to + v_event_time_to, "YYYY/MM/DDhh:mm"),
 					          allDay: false
 						}]);				

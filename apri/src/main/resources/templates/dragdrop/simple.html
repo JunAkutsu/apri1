@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.thymleaf.org">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bootstrapの基本テンプレート</title>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-1/css/bootstrap.min.css}" />
+	<link rel="stylesheet" th:href="@{/webjars/fullcalendar/3.8.0/fullcalendar.min.css}" />
+	<link rel="stylesheet" th:href="@{/css/datepicker/tempusdominus-bootstrap-4.min.css}" />
+	<link rel="stylesheet" th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}" />
+  </head>
+  <body>
+	<h1>ドラッグドロップ1</h1>
+ 	<div id="contents" class="container-fluid">
+      <div id="err_message_main"></div>
+	    <div id="calendar"></div>　<!-- ここがカレンダー表示部分 -->
+      </div>
+    </div>          	
+	<script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/momentjs/2.22.2/min/moment.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/fullcalendar/3.8.0/fullcalendar.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/fullcalendar/3.8.0/locale/ja.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/4.0.0-1/js/bootstrap.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/datepicker/tempusdominus-bootstrap-4.min.js}"></script>
+	<script type="text/javascript">
+    	$(function() {
+    		$('#calendar').fullCalendar({
+    			header: {
+    		          // fullcalendarのヘッダーに配置するボタン
+    		          // 左側には「<、>、今日」のボタン
+    		          // 中央には表示している月
+    		          // 右側には月表示、週表示、日表示、月予定
+    		          left: 'prev,next today',
+    		          center: 'title',
+    		          right: 'month,agendaWeek,agendaDay,listMonth'
+    		        },
+
+   		        timeFormat: 'HH:mm', // 時間表示フォーマット
+//	   		    timezone: 'Asia/Tokyo', // タイムゾーン設定
+	   		    timezone: 'UTC', // タイムゾーン設定
+	 	  		eventLimit: true, // イベント増えた時にリンクボタン表示
+	 	  		editable: true, // 編集可能設定
+	 	  		slotEventOverlap: true, // イベントの見た目を重ねて表示
+	 	  		selectable: true, // カレンダー空白部分のドラッグ可能
+	 	  		selectHelper: true, // これをtrueにすると範囲設定できます
+	 	  		slotLabelFormat:"HH:mm", // 日、週の左側のラベル表示
+	 	  		nextDayThreshold:"00:00:00", // 次の日扱いにする時刻
+	 	  		selectMinDistance: 1
+    		});
+
+        });
+    </script>
+  </body>
+</html>
