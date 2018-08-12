@@ -6,8 +6,11 @@
 	<groupId>com</groupId>
 	<artifactId>apri</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+<!-- Tomcatを使用する場合 -->
+	<packaging>war</packaging>
+<!--  組み込みTomcatを使用ｂする場合
 	<packaging>jar</packaging>
-
+-->
 	<name>apri</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -153,8 +156,18 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- Tomcatを使用する場合、追加する　-->
+		<dependency> 
+		  <groupId>org.springframework.boot</groupId> 
+		  <artifactId>spring-boot-starter-tomcat</artifactId> 
+		  <scope>provided</scope> 
+		</dependency> 
+		
 	</dependencies>
 	<build>
+		<!-- warファイル作成時のアプリ名 -->
+		<finalName>apri</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
