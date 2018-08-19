@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.thymleaf.org">
+  <head>
+    <meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>menu</title>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-1/css/bootstrap.min.css}" />
+	<style>
+ul {
+    padding: 0px 0px 0px 10px; 
+    margin: 0;
+}
+ul li {
+    list-style: none;
+    cursor:pointer;
+}
+
+.close{
+    display: none;
+}	
+	
+.close li{ 
+    padding: 0px 0px 0px 1px; 
+} 
+	</style>
+  </head>
+<script language="javascript"><!--
+   function onClerColor(){
+
+        var targetTables = document.getElementById("menu");
+
+        if (!targetTables) return false;
+
+        var targetRows = targetTables.getElementsByTagName("li");
+
+        for (var k=0; k < targetRows.length; k++) {
+            targetRows[k].style.backgroundColor ="";
+        }
+   }
+
+   function onClickColor(char_id){
+
+        onClerColor();
+
+        var targetlist = document.getElementById(char_id);
+        targetlist.style.backgroundColor="#ffe4c4";
+
+   }
+--></script>
+  <body>
+    <table class="menu" id="menu">
+
+   <!--アコーディオンメニュー部分 start-->
+    <nav id="accordion">
+        <ul>
+            <!--1階層アコーディオン start-->
+            <li>menu1 ▼</li>
+            <ul class="close">
+              <li><a href="/bootstap/" target="main">bootstrap</a></li>
+              <li><a href="/xlsx2/" target="main">xlsx</a></li>
+            </ul>
+            <!--1階層アコーディオン end-->
+            <li>menu2 ▼</li>
+            <ul class="close">
+                <li><a href="#">menu2.1</a></li>
+                <li><a href="#">menu2.1</a></li>
+            </ul>
+        </ul>
+    </nav>
+    </table>
+	<script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/4.0.0-1/js/bootstrap.min.js}"></script>
+	<script type="text/javascript">
+	$(function () { 
+      $('#accordion li').click(function() { 
+          $(this).next('ul').slideToggle(1); 
+      }); 
+	});
+	</script>
+  </body>
+</html>
