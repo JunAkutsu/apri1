@@ -41,6 +41,11 @@ public class RegistContainerLogic {
 		return "iframe/index3";
 	}
 	
+	@RequestMapping(value="index4", method=RequestMethod.GET)
+	public String index4(Model model){
+		return "iframe/index4";
+	}
+	
 	@RequestMapping(value="menu", method=RequestMethod.GET)
 	public String menu(Model model){
 		return "iframe/menu";
@@ -49,5 +54,10 @@ public class RegistContainerLogic {
 	@RequestMapping(value="menu3", method=RequestMethod.GET)
 	public String menu3(Model model){
 		return "iframe/menu3";
+	}
+	
+	@RequestMapping(value="menu4", method=RequestMethod.GET)
+	public String menu4(Model model){
+		return "iframe/menu4";
 	}
 }

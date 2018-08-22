@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" /><!-- MSIEの動作バージョンの指定ですがこのままあってもいいでしょう。-->
+<meta http-equiv="default-style" content="text/css" />
+<title>ifame</title>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-1/css/bootstrap.min.css}" />
+</head>
+
+<body scroll="no" style="margin:0px;overflow:hidden;background:white;" onResize="resize_frames();">
+
+<!--
+ javascriptが使えない場合：
+ javascriptで書いているのでjavascript無効ではどうしようもない。大元からjavascriptなしのリンクでたどっていただく。
+ ...実際は大半が情報収集ロボットのようだが。...無視するなら消してください。
+ <a href="...">...</a>の部分はサイトに合わせて書き換えてください。
+-->
+<noscript>
+お使いのブラウザはJavaScriptが有効でないため通常の表示ができません。<br>
+以下のリンクよりご覧ください。<br>
+　→　<a href="pagelink.html">記事一覧</a><!-- 要変更 -->
+</noscript>
+
+<script type="text/javascript"><!--
+// cookieの書込、読出。
+// サイトの中にさらに子サイトをつくったときなどのcookie識別用ヘッダー。不要なら空("")に。
+cookie_head = "SITE1_";
+// cookieの保存。setcookie("name", "value", "3days");などと。
+function setcookie(cookiename, cookievalue, timelimit) {
+ cookienameorder = cookie_head + cookiename + "=";
+ if(timelimit) {
+  lifetime = parseInt(timelimit.toString().match(/^[\+\-]?[0-9]*/));
+  if(lifetime != 0) {
+   cookielife = new Date();
+   lifeunit = timelimit.toString().match(/[A-Za-z]*$/).toString();
+   if(lifeunit.match(/^min/i)) { lifetime *= 60; } // minutes
+   else if(lifeunit.match(/^h/i)) { lifetime *= 60*60; } // hours
+   else if(lifeunit.match(/^d/i)) { lifetime *= 60*60*24; } // days
+   else if(lifeunit.match(/^w/i)) { lifetime *= 60*60*24*7; } // weeks
+   else if(lifeunit.match(/^m/i)) { lifetime *= 60*60*24*31; } // months
+   else if(lifeunit.match(/^y/i)) { lifetime *= 60*60*24*365; } // years
+   else { lifetime *= 60*60*24; } // default unit: days
+   cookielife.setTime(cookielife.getTime() + lifetime*1000);
+   expiredate = cookielife.toGMTString();
+   document.cookie = cookienameorder + cookievalue + ";expires=" + expiredate+";";
+  } else {
+   document.cookie = cookienameorder + cookievalue + ";";
+  }
+ } else {
+  document.cookie = cookienameorder + cookievalue + ";";
+ }
+}
+// cookieの読出。getcookie("name");で値を得る。cookieがない場合false。
+function getcookie(cookiename) {
+ cookiedata = " "+document.cookie+";";
+ cookienameorder = " "+cookie_head+cookiename+"=";
+ startpos = cookiedata.indexOf(cookienameorder);
+ if(startpos >= 0) {
+  endpos = cookiedata.indexOf(";", startpos);
+  readdata = cookiedata.substring(startpos + cookienameorder.length, endpos);
+  return(readdata);
+ } else {
+  return false;
+ }
+}
+//--></script>
+
+<script type="text/javascript"><!--
+// 初期設定。最低限ここをセットすればいいでしょう。
+frame_onstart    = true; // 初期baseフレームを表示するか否か。true or false。その後はcookieに記録されたユーザ設定が優先します。
+top_windowname   = "top"; // topページ(このページ)のウィンドウ名。ウィンドウ名はお互いに別のページを制御するのに使用します。
+left_windowname  = "menu"; // 左フレームのウィンドウ名。
+right_windowname = "main"; // 右フレームのウィンドウ名。
+base_order       = "left"; // 設定・動作を優先指定するフレーム。縮小・復帰タブで縮小・復帰できる。"left"または"right"だが、"right"はタブがスクロールバーとかぶるのでお薦めしない。
+base_width       = 250; // 優先指定されたフレームの幅(初期値)。
+minleft_width    = 0; // 区切り線ドラッグによる左フレームの最小幅。
+minright_width   = 0; // 区切り線ドラッグによる右フレームの最小幅。
+safe_width       = 250; // 手動で幅を極端に狭くしてしまった場合の救済復帰位置。縮小・復帰タブの縮小→復帰でこの位置まで復帰。
+leftframe_background  = ""; // 左フレームの背景指定。
+rightframe_background = ""; // 右フレームの背景指定。
+leftframe_src    = "/iframe2/menu/"; // 左フレームに表示するページの指定。
+rightframe_src   = ""; // 右フレームに表示するページの指定。
+tab_width        = 20; // 下記フレーム縮小・復帰タブの幅。ピクセル数。
+shrink_tabmark   = "<div style=\"color:white;font-size:14px;font-weight:bold;text-align:center;\">←</div>"; // 縮小タブのマーク。base_orderを変更したらこちらも変更のこと(方向が逆になります。)
+expand_tabmark   = "<div style=\"color:white;font-size:14px;font-weight:bold;text-align:center;\">→</div>"; // 復帰タブのマーク。同上。
+boundary_width   = 2; // フレーム区切り線の太さ。細いと見にくい、太いと品がない。色とからめて2から5あたりがお薦め。
+boundary_color   = "silver";  // フレーム区切り線の色。"black","gray","silver","#ABC","#ABCDEF"など。
+boundary_shrinkcolor = "#6666FF"; // フレーム縮小時の区切り線の色。縮小状態であることがわかるように変えてみる。
+boundary_style   = "solid"; // 区切り線の形状。"solid","double","ridge", "groove", "dotted", "dashed"などからお好みで。
+cookie_id        = "frame1_"; // ユーザセット値保存cookie識別用。フレーム内にさらにフレームを入れた場合重ならないように変更のこと。
+cookie_life      = "0"; // ユーザの位置ドラッグによるフレーム位置設定を覚えておいてあげる日数。0だとブラウザ終了まで。
+slide_action     = 0; // 縮小・復帰タブでスライドアクションを使用するか否か。0で瞬時切替。するならスライドを完了させる時間(100〜5000、単位 ms:1000で1秒)。
+// 初期設定ここまで。以下は改造、改良する以外特に変更する必要はありません。
+//--></script>
+
+<script type="text/javascript"><!--
+// ブラウザの画面サイズの取得。ただしブラウザがそれぞれの方言を主張していたずっと昔に書いたものなので今となっては古いかも。
+function getWindowWidth() {
+ var width = 0;
+ if(window.innerWidth) {
+  width = window.innerWidth;
+ } else if(document.documentElement && document.documentElement.clientWidth) {
+  width = document.documentElement.clientWidth;
+ } else if(document.body && document.body.clientWidth) {
+  width = document.body.clientWidth;
+ }
+ return(width);
+}
+function getWindowHeight() {
+ var height = 0;
+ if(window.innerHeight) {
+  height = window.innerHeight;
+ } else if(document.documentElement && document.documentElement.clientHeight) {
+  height = document.documentElement.clientHeight;
+ } else if(document.body && document.body.clientHeight) {
+  height = document.body.clientHeight;
+ }
+ return(height);
+}
+// ディスプレーのスクリーンサイズの取得。使ってないけどおまけ。
+function getScreenWidth() {
+ var width = 0;
+ if(window.screen.width) {
+  width = window.screen.width;
+ }
+ return(width);
+}
+function getScreenHeight() {
+ var height = 0;
+ if(window.screen.height) {
+  height = window.screen.height;
+ }
+ return(height);
+}
+//--></script>
+
+<script type="text/javascript"><!--
+// パラメータ変数の定義と初期化。
+showarea_width   = 0;
+showarea_height  = 0;
+home_width       = 0;
+boundary_pos     = 0;
+leftframe_left   = 0;
+leftframe_width  = 0;
+rightframe_left  = 0;
+rightframe_width = 0;
+
+function set_params() {
+ showarea_width  = getWindowWidth() ? getWindowWidth() : 640;
+ showarea_height = getWindowHeight() ? getWindowHeight() : 640;
+ base_width      = getcookie(cookie_id+"base") ? Number(getcookie(cookie_id+"base")) : base_width;
+ home_width      = getcookie(cookie_id+"home") != "" ? parseInt(getcookie(cookie_id+"home")) : (frame_onstart ? base_width : 0);
+ if(base_order != "right") {
+  boundary_pos     = home_width;
+  if(home_width > 0) {
+   leftframe_left  = 0;
+   leftframe_width = home_width;
+  } else { // 優先フレームがshrink状態のとき。
+   leftframe_left  = -base_width;
+   leftframe_width = base_width;
+  }
+  rightframe_left  = boundary_pos + Math.max(boundary_width,4); // 右フレームは壁にくっつくと引き出しにくくなるのでとにかく4pxは離す。以下同様。
+  rightframe_width = showarea_width - boundary_pos - Math.max(boundary_width,4);
+ } else { // base_order == "right"
+  boundary_pos     = showarea_width - home_width - Math.max(boundary_width,4);
+  leftframe_left   = 0;
+  leftframe_width  = boundary_pos;
+  if(home_width > 0) {
+   rightframe_left  = boundary_pos + Math.max(boundary_width,4);
+   rightframe_width = home_width;
+  } else {
+   rightframe_left  = showarea_width;
+   rightframe_width = base_width;
+  }
+ }
+ // 区切りが画面外に行っちゃったときのばかよけ。ブラウザのサイズを変えるとありえる。
+ if(leftframe_width < 0 || rightframe_width < 0) {
+  boundary_pos = Math.floor(showarea_width/2); // めんどうなので中央位置にリセットしてしまおう。
+  leftframe_width  = boundary_pos;
+  rightframe_width = showarea_width - boundary_pos - Math.max(boundary_width,4);
+  setcookie(cookie_id+"base", Math.max(boundary_pos, safe_width), cookie_life);
+ }
+ setcookie(cookie_id+"home", home_width, cookie_life);
+}
+set_params(); // 最初のセット。
+
+// 上記パラメータでフレーム及び部品を定義。
+// トップページ(このページ)の名前を登録。
+window.self.name = top_windowname;
+
+// 左側フレームをつくる。
+document.write('<iframe id="leftframe" name="'+left_windowname+'" width="'+leftframe_width+'" height="100%" frameborder="0" allowtransparency="true" src="'+leftframe_src+'" style="position:fixed;top:0px;left:'+leftframe_left+'px;border:none;overflow:auto;'+leftframe_background+'">'+leftframe_src+'</iframe>');
+
+// 右側フレームをつくる。
+document.write('<iframe id="rightframe" name="'+right_windowname+'" width="'+rightframe_width+'" height="100%" frameborder="0" allowtransparency="true" src="'+rightframe_src+'" style="position:fixed;top:0px;left:'+rightframe_left+'px;border:none;overflow:auto;'+rightframe_background+'">'+rightframe_src+'</iframe>');
+
+// 左右フレームの間の区切り線。
+document.write('<div id="boundary" style="position:fixed;top:0px;left:'+boundary_pos+'px;width:0px;height:'+showarea_height+'px;border-left:'+boundary_width+'px '+boundary_style+' '+boundary_color+';"></div>');
+
+// イベントキャッチ用<div>。フレーム区切りの移動用。
+// 内部が全く空だとイベントをキャッチしないブラウザがあり、さりげなく<br>を入れている。
+document.write('<div id="catcher" style="position:fixed;top:0px;left:'+boundary_pos+'px;width:0px;height:'+showarea_height+'px;border:2px solid transparent;font-size:xx-small;"><br></div>');
+
+// フレーム縮小・復帰タブと、さらに遊びでスライド動作機能もつけてみよう。
+document.write('<div id="pitcher" onClick="action_throw();" style="position:fixed;top:0px;width:'+tab_width+'px;border:2px solid #6666AA;overflow:hidden;background:gray;cursor:pointer;">'+(home_width > 0 ? shrink_tabmark : expand_tabmark)+'</div>');
+
+// その他タブを追加したらタブ位置のセットをset_tabs()に、さらにアクション処理関数の定義を行う。
+
+// タブの位置設定と、場合によってはタブのマークの変更。
+function set_tabs(targetpos)
+{
+ // フレーム縮小・復帰タブ
+ if(base_order != "right") {
+  document.getElementById("pitcher").style.left = targetpos+"px";
+ } else {
+  document.getElementById("pitcher").style.left = (targetpos + boundary_width - tab_width)+"px";
+ }
+ if(slide_direction == "shrink") {
+  document.getElementById("pitcher").innerHTML  = shrink_tabmark;
+ } else {
+  document.getElementById("pitcher").innerHTML  = expand_tabmark;
+ }
+
+ // その他にタブを定義したら上にならってここに記載。
+
+}
+
+
+// 初期設定あるいはウィンドウサイズが変わったとき(小さくなったとき)のフレームサイズの変更。
+slide_direction  = "";
+function resize_frames() {
+ set_params();
+ set_frames(boundary_pos);
+ document.getElementById("boundary").style.height = showarea_height+"px";
+ document.getElementById("catcher").style.left    = boundary_pos+"px";
+ document.getElementById("catcher").style.height  = showarea_height+"px";
+ if(base_order != "right" ? boundary_pos > 0 : (showarea_width - boundary_pos - Math.max(boundary_width,4)) > 0) {
+  document.getElementById("boundary").style.borderLeft = boundary_width+"px "+boundary_style+" "+boundary_color;
+  slide_direction = "shrink";
+ } else {
+  document.getElementById("boundary").style.borderLeft = boundary_width+"px "+boundary_style+" "+boundary_shrinkcolor;
+  slide_direction = "expand";
+ }
+ set_tabs(boundary_pos);
+ return false;
+}
+resize_frames(); // 最初のセット。
+
+// 区切り位置を指定して左右フレームの位置や幅のセット。
+function set_frames(targetpos) {
+ boundary_pos     = targetpos;
+ leftframe_left   = boundary_pos > 0 ? 0 : -base_width;
+ if((leftframe_width = boundary_pos) <= 0) { leftframe_width = base_width; }
+ rightframe_left  = boundary_pos + Math.max(boundary_width,4);
+ if((rightframe_width = showarea_width - boundary_pos - Math.max(boundary_width,4)) <= 0) { rightframe_width = base_width; }
+ document.getElementById("leftframe").style.left   = leftframe_left+"px";
+ document.getElementById("leftframe").style.width  = Math.max(leftframe_width,0)+"px";
+ document.getElementById("rightframe").style.left  = rightframe_left+"px";
+ document.getElementById("rightframe").style.width = Math.max(rightframe_width,0)+"px";
+ document.getElementById("boundary").style.left    = boundary_pos+"px";
+ set_tabs(boundary_pos);
+}
+
+// マウス位置の取得。
+mousepos_x = mousepos_y = 0;
+function get_mousepos(evt) {
+ if(evt) {
+  mousepos_x = evt.clientX;
+  mousepos_y = evt.clientY;
+ }
+ else {
+  mousepos_x = event.clientX;
+  mousepos_y = event.clientY;
+ }
+}
+
+// 以下、ユーザアクション。
+// フレーム区切り位置の変更。キャッチするイベントと処理の定義。
+document.getElementById("boundary").onmouseover = action_ready;
+document.getElementById("boundary").onmousedown = action_start;
+document.getElementById("boundary").onmousemove = action_drag;
+document.getElementById("boundary").onmouseup   = action_stop;
+document.getElementById("catcher").onmouseover  = action_ready;
+document.getElementById("catcher").onmousedown  = action_start;
+document.getElementById("catcher").onmousemove  = action_drag;
+document.getElementById("catcher").onmouseup    = action_stop;
+document.getElementById("catcher").onmouseout   = action_stop;
+action = "stop";
+
+// 区切り移動処理の処理開始準備を開始。まずはお知らせのみ。
+function action_ready(evt) {
+ // 区切り線上にマウスがきたとき形状を変えて移動できることを知らせる。
+ document.getElementById("boundary").style.cursor = "col-resize";
+ document.getElementById("catcher").style.cursor  = "col-resize";
+ return false;
+}
+
+// 移動開始。
+mouse_shift = 0;
+function action_start(evt) {
+ if(action != "stop") { return false; }
+ action = "drag";
+ get_mousepos(evt);
+ mouse_shift = mousepos_x - boundary_pos;
+ document.getElementById("boundary").style.borderLeft = boundary_width+"px "+(boundary_style != "double" ? "double" : "solid")+" "+boundary_color;
+ document.getElementById("catcher").style.borderWidth = showarea_width+"px";
+ document.getElementById("catcher").style.left        = boundary_pos-showarea_width+"px";
+ return action_drag(evt);
+}
+
+// 区切り移動。
+function action_drag(evt) {
+ if(action != "drag") { return false; }
+ get_mousepos(evt);
+ mousepos = mousepos_x - mouse_shift;
+ if(mousepos >= minleft_width && mousepos <= showarea_width-minright_width-Math.max(boundary_width,4)) {
+  set_frames(mousepos);
+  return true;
+ } else {
+  action_stop(evt);
+  return false;
+ }
+}
+
+// 移動停止。
+function action_stop(evt) {
+ if(action != "drag") { return false; }
+ document.getElementById("catcher").style.borderWidth = "2px";
+ document.getElementById("catcher").style.left  = boundary_pos+"px";
+ if(base_order != "right" ? boundary_pos > 0 : (showarea_width - boundary_pos - Math.max(boundary_width,4)) > 0) {
+  document.getElementById("boundary").style.borderLeft = boundary_width+"px "+boundary_style+" "+boundary_color;
+  slide_direction = "shrink";
+ } else {
+  document.getElementById("boundary").style.borderLeft = boundary_width+"px "+boundary_style+" "+boundary_shrinkcolor;
+  slide_direction = "expand";
+ }
+ set_tabs(boundary_pos);
+ // 値をクッキーに保存。但し安全な範囲の値のみ。
+ if(leftframe_width >= minleft_width && rightframe_width >= minright_width) {
+  base_width = base_order != "right" ? leftframe_width : rightframe_width;
+  setcookie(cookie_id+"base", Math.max(base_width, safe_width), cookie_life);
+ }
+ setcookie(cookie_id+"home", (base_order != "right" ? boundary_pos : showarea_width-boundary_pos-Math.max(boundary_width,4)), cookie_life);
+ action = "stop";
+ return false;
+}
+// 従来の<frameset>の機能模擬コードはここまで。
+
+
+// 以下はおまけでつけてみた機能。本来の<frameset>にはない。
+// 縮小・復帰タブアクション。アクション定義は縮小・復帰タブにonClickでつけてある。
+function action_throw() {
+ if(slide_action >= 100 && slide_action <= 5000) {
+  slide_timer = 0;
+  slider(slide_action);
+ } else {
+  if(slide_direction == "shrink") {
+   action_shrink();
+  } else {
+   action_expand();
+  }
+ }
+ return false;
+}
+
+// base_orderで指定された側のフレームを一気に縮小する。
+function action_shrink() {
+ targetpos = base_order != "right" ? 0 : showarea_width - Math.max(boundary_width,4);
+ set_frames(targetpos);
+ document.getElementById("boundary").style.borderLeft = boundary_width+"px "+boundary_style+" "+boundary_shrinkcolor;
+ document.getElementById("catcher").style.left  = boundary_pos+"px";
+ slide_direction = "expand";
+ set_tabs(boundary_pos);
+ setcookie(cookie_id+"home", (base_order != "right" ? boundary_pos : showarea_width-boundary_pos-Math.max(boundary_width,4)), cookie_life);
+ return false;
+}
+
+// フレーム縮小を一気に解除する。
+function action_expand() {
+ targetpos = base_order != "right" ? Math.max(base_width, safe_width) : showarea_width-Math.max(base_width, safe_width)-Math.max(boundary_width,4);
+ set_frames(targetpos);
+ document.getElementById("boundary").style.borderLeft = boundary_width+"px "+boundary_style+" "+boundary_color;
+ document.getElementById("catcher").style.left  = boundary_pos+"px";
+ slide_direction = "shrink";
+ set_tabs(boundary_pos);
+ setcookie(cookie_id+"home", (base_order != "right" ? boundary_pos : showarea_width-boundary_pos-Math.max(boundary_width,4)), cookie_life);
+ return false;
+}
+
+// スライドアクション。フレームをスライドして表示・非表示する。はっきり言って全くよけいな機能。単なる遊び。
+slide_timertick = 10; // msec。
+slide_timer     = 0;
+slide_starttime = 0;
+slide_startpos  = 0;
+slide_targetpos = 0;
+
+// スライド制御。
+function slider(slide_time)
+{
+ if(slide_time < 100 || slide_time > 5000){ slide_time = 1000; }
+ // 開始準備。
+ if(slide_timer == 0) {
+  // タイマーと位置のセット。
+  slide_starttime = (new Date()).getTime();
+  if(slide_direction == "shrink") {
+   slide_startpos  = boundary_pos;
+   slide_targetpos = base_order != "right" ? 0 : showarea_width-Math.max(boundary_width,4); // boundary幅が細いと手動で引き出せなくなるので4px残す。
+  } else {
+   slide_startpos  = base_order != "right" ? 0 : showarea_width-Math.max(boundary_width,4);
+   slide_targetpos = base_order != "right" ? Math.max(base_width, safe_width) : showarea_width-Math.max(base_width, safe_width)-Math.max(boundary_width,4);
+  }
+  if(slide_direction == "expand") {
+   // 手動でフレーム幅が変えられたかもしれないので再セット。
+   leftframe_width  = slide_targetpos;
+   rightframe_width = showarea_width-slide_targetpos-Math.max(boundary_width,4);
+  }
+ }
+ // スライド。
+ slide_timer = Math.max(slide_timertick, (new Date()).getTime() - slide_starttime);
+ if(slide_timer <= slide_time) {
+  targetpos = Math.round(slide_startpos + (slide_targetpos - slide_startpos) * slide_timer / slide_time);
+  slide_frames(targetpos);
+  setTimeout("slider("+slide_time+");", slide_timertick);
+  return;
+ }
+ // スライド終了。
+ slide_frames(slide_targetpos);
+ if(slide_direction == "shrink") {
+  document.getElementById("boundary").style.borderLeft = boundary_width+"px "+boundary_style+" "+boundary_shrinkcolor;
+  slide_direction = "expand";
+ } else {
+  document.getElementById("boundary").style.borderLeft = boundary_width+"px "+boundary_style+" "+boundary_color;
+  slide_direction = "shrink";
+ }
+ set_tabs(boundary_pos);
+ setcookie(cookie_id+"home", (base_order != "right" ? slide_targetpos : showarea_width-slide_targetpos-Math.max(boundary_width,4)), cookie_life);
+}
+
+// 実際にフレーム位置を移動する。
+function slide_frames(targetpos){
+ boundary_pos = targetpos;
+ if(base_order != "right") {
+  leftframe_left   = boundary_pos - leftframe_width;
+  rightframe_left  = boundary_pos + Math.max(boundary_width,4);
+  rightframe_width = Math.max(showarea_width - boundary_pos - Math.max(boundary_width,4),0);
+ } else {
+  leftframe_left   = 0;
+  leftframe_width  = Math.max(boundary_pos,0);
+  rightframe_left  = boundary_pos + Math.max(boundary_width,4);
+ }
+ document.getElementById("leftframe").style.left   = leftframe_left+"px";
+ document.getElementById("leftframe").style.width  = leftframe_width+"px";
+ document.getElementById("rightframe").style.left  = rightframe_left+"px";
+ document.getElementById("rightframe").style.width = rightframe_width+"px";
+ document.getElementById("boundary").style.left = boundary_pos+"px";
+ document.getElementById("catcher").style.left  = boundary_pos+"px";
+ set_tabs(boundary_pos);
+}
+
+//--></script>
+	<script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/4.0.0-1/js/bootstrap.min.js}"></script>
+</body>
+</html>
+
