@@ -2,6 +2,7 @@ package com.apri.iframe2;
 
 import java.util.List;
 
+// コメント
 public class GyoumuDomain {
 
 	private int no;

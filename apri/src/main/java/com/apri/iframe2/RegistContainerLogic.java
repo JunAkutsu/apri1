@@ -49,7 +49,7 @@ public class RegistContainerLogic {
 			MenuDomain data = list.get(i);
 			// 未処理のデータだけ、以下の処理を実施する。
 			if(!data.isSyori_zumi_flg()){
-				// GyoumuDomainの生成
+				// GyoumuDomainの生成　
 				GyoumuDomain gyoumu_data = new GyoumuDomain();
 				
 				// Noの設定
