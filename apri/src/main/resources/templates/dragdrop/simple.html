@@ -9,6 +9,23 @@
 	<link rel="stylesheet" th:href="@{/webjars/fullcalendar/3.8.0/fullcalendar.min.css}" />
 	<link rel="stylesheet" th:href="@{/css/datepicker/tempusdominus-bootstrap-4.min.css}" />
 	<link rel="stylesheet" th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}" />
+	<link rel="stylesheet" th:href="@{/css/fullcalendar/fullcalendar.print.min.css}"  media='print' />
+	<link rel="stylesheet" th:href="@{/css/fullcalendar/scheduler.min.css}" />
+	<link rel="stylesheet" th:href="@{/css/common.css}" />
+<style>
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+  }
+
+  #calendar {
+    max-width: 1500px;
+    margin: 50px auto;
+  }
+
+</style>
   </head>
   <body>
 	<h1>ドラッグドロップ1</h1>
@@ -17,38 +34,561 @@
 	    <div id="calendar"></div>　<!-- ここがカレンダー表示部分 -->
       </div>
     </div>          	
+<div id="calendarModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">イベント</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      </div>
+      <form method="post" id="dialog-form">
+        <input type="hidden" name="action_type" id="action_type" value="" />
+        <input type="hidden" name="id" id="id" value="" />
+        <input type="hidden" name="resourceId" id="resourceId" value="" />
+        <div class="modal-body">
+		  <div id="err_message"></div>
+          <div class="modal-regist">
+            <div class="form-group">
+              <div class="input-group">
+                <input type="text" class="form-control" name="event_name" id="event_name" placeholder="イベント名"  value="" /> 
+              </div>
+            </div>
+            <div class="line-adjust"></div>
+            <div class="form-row2">
+              <div class="input-group col-3" id="datetimepicker" data-target-input="nearest">
+                <input type="text" class="form-control" name="event_day_from" id="event_day_from" placeholder="日付(From)"  value="" data-target="#datetimepicker" />
+				<div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker"> 
+			      <div class="input-group-text"><i class="fa fa-calendar"></i></div> 
+			    </div> 
+              </div>
+	          <div class="line-adjust2"></div>
+              <div class="input-group col-2" id="datetimepicker2" data-target-input="nearest">
+                <input type="text" class="form-control" name="event_time_from" id="event_time_from" placeholder="時間(From)"  value="" data-target="#datetimepicker2" />
+				<div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker"> 
+			      <div class="input-group-text"><i class="fa fa-clock-o"></i></div> 
+			    </div> 
+              </div>
+	          <div class="from_tilde_to">～</div>
+              <div class="input-group col-3" id="datetimepicker3" data-target-input="nearest">
+                <input type="text" class="form-control" name="event_day_to" id="event_day_to" placeholder="日付(To)"  value="" data-target="datetimepicker3" />
+				<div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker"> 
+			      <div class="input-group-text"><i class="fa fa-calendar"></i></div> 
+			    </div> 
+              </div>
+	          <div class="line-adjust2"></div>
+              <div class="input-group col-2" id="datetimepicker4" data-target-input="nearest">
+                <input type="text" class="form-control" name="event_time_to" id="event_time_to" placeholder="時間(To)"  value="" data-target="#datetimepicker4" />
+				<div class="input-group-append" data-target="#datetimepicker4" data-toggle="datetimepicker"> 
+			      <div class="input-group-text"><i class="fa fa-clock-o"></i></div> 
+			    </div> 
+              </div>
+            </div>
+            <div class="line-adjust"></div>
+            <div class="form-group">
+         　　　　　　　　　<textarea class="form-control" name="detail_naiyou" id="detail_naiyou" placeholder="詳細" rows="5"></textarea>
+            </div>
+            
+            <div class="line-adjust"></div>
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn_save" class="btn btn-primary">登録</button>
+          <button type="button" id="btn_delete" class="btn btn-primary">削除</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">閉じる</button>
+        </div>
+ 	  </form>
+    </div>
+  </div>
+</div>
 	<script type="text/javascript" th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
 	<script type="text/javascript" th:src="@{/webjars/momentjs/2.22.2/min/moment.min.js}"></script>
 	<script type="text/javascript" th:src="@{/webjars/fullcalendar/3.8.0/fullcalendar.min.js}"></script>
 	<script type="text/javascript" th:src="@{/webjars/fullcalendar/3.8.0/locale/ja.js}"></script>
 	<script type="text/javascript" th:src="@{/webjars/bootstrap/4.0.0-1/js/bootstrap.min.js}"></script>
 	<script type="text/javascript" th:src="@{/js/datepicker/tempusdominus-bootstrap-4.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/fullcalendar/scheduler.min.js}"></script>
 	<script type="text/javascript">
     	$(function() {
-    		$('#calendar').fullCalendar({
-    			header: {
-    		          // fullcalendarのヘッダーに配置するボタン
-    		          // 左側には「<、>、今日」のボタン
-    		          // 中央には表示している月
-    		          // 右側には月表示、週表示、日表示、月予定
-    		          left: 'prev,next today',
-    		          center: 'title',
-    		          right: 'month,agendaWeek,agendaDay,listMonth'
-    		        },
+    		$('#datetimepicker').datetimepicker({
+                dayViewHeaderFormat: 'YYYY年 MMMM',
+                tooltips: {
+                    close: '閉じる',
+                    selectMonth: '月を選択',
+                    prevMonth: '前月',
+                    nextMonth: '次月',
+                    selectYear: '年を選択',
+                    prevYear: '前年',
+                    nextYear: '次年',
+                    selectTime: '時間を選択',
+                    selectDate: '日付を選択',
+                    prevDecade: '前期間',
+                    nextDecade: '次期間',
+                    selectDecade: '期間を選択',
+                    prevCentury: '前世紀',
+                    nextCentury: '次世紀'
+                },
+                format: 'YYYY/MM/DD',
+                locale: 'ja',
+                buttons: {
+	                showClose: true
+                }
+            });
 
+    		$('#datetimepicker2').datetimepicker({
+                tooltips: {
+                	close: '閉じる',
+                    pickHour: '時間を取得',
+                    incrementHour: '時間を増加',
+                    decrementHour: '時間を減少',
+                    pickMinute: '分を取得',
+                    incrementMinute: '分を増加',
+                    decrementMinute: '分を減少',
+                    pickSecond: '秒を取得',
+                    incrementSecond: '秒を増加',
+                    decrementSecond: '秒を減少',
+                    togglePeriod: '午前/午後切替',
+                    selectTime: '時間を選択'
+                },
+                format: 'HH:mm',
+                locale: 'ja',
+                buttons: {
+	                showClose: true
+                }
+            });
+    		
+    		$('#datetimepicker3').datetimepicker({
+                dayViewHeaderFormat: 'YYYY年 MMMM',
+                tooltips: {
+                    close: '閉じる',
+                    selectMonth: '月を選択',
+                    prevMonth: '前月',
+                    nextMonth: '次月',
+                    selectYear: '年を選択',
+                    prevYear: '前年',
+                    nextYear: '次年',
+                    selectTime: '時間を選択',
+                    selectDate: '日付を選択',
+                    prevDecade: '前期間',
+                    nextDecade: '次期間',
+                    selectDecade: '期間を選択',
+                    prevCentury: '前世紀',
+                    nextCentury: '次世紀'
+                },
+                format: 'YYYY/MM/DD',
+                locale: 'ja',
+                buttons: {
+	                showClose: true
+                }
+            });
+
+    		$('#datetimepicker4').datetimepicker({
+                tooltips: {
+                	close: '閉じる',
+                    pickHour: '時間を取得',
+                    incrementHour: '時間を増加',
+                    decrementHour: '時間を減少',
+                    pickMinute: '分を取得',
+                    incrementMinute: '分を増加',
+                    decrementMinute: '分を減少',
+                    pickSecond: '秒を取得',
+                    incrementSecond: '秒を増加',
+                    decrementSecond: '秒を減少',
+                    togglePeriod: '午前/午後切替',
+                    selectTime: '時間を選択'
+                },
+                format: 'HH:mm',
+                locale: 'ja',
+                buttons: {
+	                showClose: true
+                }
+            });
+    		
+    	    $('#calendar').fullCalendar({
+    	    	schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+    	        now: '2018-04-07',
+    	        editable: true, // enable draggable events
+    	        aspectRatio: 1.8,
+    	        scrollTime: '00:00', // 時間の表示開始位置を決める。
+    	        header: {
+    	          left: 'today prev,next',
+    	          center: 'title',
+    	          right: 'timelineDay,timelineThreeDays,agendaWeek,month,listWeek'
+    	        },
+    	        defaultView: 'timelineDay',
+    	        views: {
+    	          timelineThreeDays: {
+    	            type: 'timeline',
+    	            duration: { days: 3 }
+    	          }
+    	        },
+    	        resourceLabelText: '班',
+//    	        events: [
+//    	          { id: '1', resourceId: '1', start: '2018-04-07T02:00:00', end: '2018-04-07T07:00:00', title: 'event 1' },
+//    	          { id: '2', resourceId: '2', start: '2018-04-07T05:00:00', end: '2018-04-07T22:00:00', title: 'event 2' },
+//    	          { id: '3', resourceId: '3', start: '2018-04-06', end: '2018-04-08', title: 'event 3' },
+//    	          { id: '4', resourceId: '4', start: '2018-04-07T03:00:00', end: '2018-04-07T08:00:00', title: 'event 4' },
+//    	        ],
    		        timeFormat: 'HH:mm', // 時間表示フォーマット
 //	   		    timezone: 'Asia/Tokyo', // タイムゾーン設定
 	   		    timezone: 'UTC', // タイムゾーン設定
-	 	  		eventLimit: true, // イベント増えた時にリンクボタン表示
-	 	  		editable: true, // 編集可能設定
 	 	  		slotEventOverlap: true, // イベントの見た目を重ねて表示
 	 	  		selectable: true, // カレンダー空白部分のドラッグ可能
 	 	  		selectHelper: true, // これをtrueにすると範囲設定できます
-	 	  		slotLabelFormat:"HH:mm", // 日、週の左側のラベル表示
+	 	  		selectMinDistance: 1,
 	 	  		nextDayThreshold:"00:00:00", // 次の日扱いにする時刻
-	 	  		selectMinDistance: 1
-    		});
+//	 	  		resources: { // you can also specify a plain string like 'json/resources.json'
+//	 	          url: '/drag2/search_team_list',
+//	 	          type: 'POST',
+//	 	          error: function() {
+//	 	            $('#script-warning').show();
+//	 	          }
+//	 	        },
+				resources: function(callback) {
+					// 横軸の班データの取得
+					   // 取得データの設定
+					   var v_data={};
 
+		    		   // 入力情報の取得
+					   $.ajax({
+							  type: "POST",
+			 				  url:'/drag2/search_team_list',
+			 				  contentType: "application/json;charset=UTF-8",
+							  data:JSON.stringify(v_data),
+							  dataType: "json"
+					   }).done(function (list) {
+						   var resources = [];
+						   $.each(list,function(index,data) {
+							   resources.push({id:data.id,
+								        title: data.title,
+								        eventColor: data.eventColor
+								      });
+						  	});
+							callback(resources);
+						}).fail(function(jqXHR, textStatus, errorThrown) {
+							// エラーメッセージの取得
+							var v_message = "<div>" + jqXHR.responseText + "</div>";
+							// エラーメッセージの設定
+							$("#err_message_main").append(v_message);
+				       });
+				},
+	 	  		events: function(start, end, timezone, callback) {
+		 	           // 縦軸のカレンダーデータ取得イベント
+					   // 取得データの設定
+					   var v_data={'event_day_from':start.format("YYYY/MM/DD"),
+							       'event_day_to':end.add('days', -1).format("YYYY/MM/DD"), 
+						   };
+
+		    		   // 入力情報の取得
+					   $.ajax({
+							  type: "POST",
+			 				  url:'/drag2/search_calender_list',
+			 				  contentType: "application/json;charset=UTF-8",
+							  data:JSON.stringify(v_data),
+							  dataType: "json"
+					   }).done(function (list) {
+						   var events = [];
+						   $.each(list,function(index,data) {
+							   events.push({id:data.id,
+								        resourceId:data.resourceId,
+								        title: data.event_name,
+								        start: moment.utc(data.event_day_from_s+data.event_time_from, "YYYY/MM/DDhh:mm"),
+								        end: moment.utc(data.event_day_to_s+data.event_time_to, "YYYY/MM/DDhh:mm"),
+								        allDay: false
+								      });
+						  	});
+							callback(events);
+						}).fail(function(jqXHR, textStatus, errorThrown) {
+							// エラーメッセージの取得
+							var v_message = "<div>" + jqXHR.responseText + "</div>";
+							// エラーメッセージの設定
+							$("#err_message_main").append(v_message);
+				       });
+	 	  		},
+	 	        eventClick: function(calEvent, jsEvent, view) {
+		 	           // カレンダーに設定したイベントクリック時のイベント
+		 	           // 取得データの設定
+					   var v_data={'id':calEvent.id,
+								    };
+
+		    		   // 入力情報の取得
+					   $.ajax({
+							  type: "POST",
+			 				  url:'/drag2/modify',
+			 				  contentType: "application/json;charset=UTF-8",
+							  data:JSON.stringify(v_data),
+							  dataType: "json"
+					   }).done(function (data) {
+							// 画面の表示値の設定
+			    			$("#dialog-form input#id").val(calEvent.id);
+			    			$("#dialog-form input#resourceId").val(data.resourceId);
+			    			$("#dialog-form input#event_name").val(data.event_name);
+			    			$("#dialog-form input#event_day_from").val(data.event_day_from);
+			    			$("#dialog-form input#event_time_from").val(data.event_time_from);
+			    			$("#dialog-form input#event_day_to").val(data.event_day_to);
+			    			$("#dialog-form input#event_time_to").val(data.event_time_to);
+			    			$("#dialog-form textarea#detail_naiyou").val(data.detail_naiyou);
+			    			$("#dialog-form input#action_type").val("2"); // 修正
+							
+				 	        // 画面の表示
+							$("#dialog-form #btn_save").prop("disabled", false);
+		                    $("#dialog-form #btn_delete").show();
+							$("#dialog-form #btn_delete").prop("disabled", false);
+			                $('#calendarModal').modal({backdrop:"static"});
+							
+						}).fail(function(jqXHR, textStatus, errorThrown) {
+							// エラーメッセージの取得
+							var v_message = "<div>" + jqXHR.responseText + "</div>";
+							// エラーメッセージの設定
+							$("#err_message").append(v_message);
+							
+							// 二重送信制御
+							$("#dialog-form #btn_save").prop("disabled", false);
+		                    $("#dialog-form #btn_delete").show();
+							$("#dialog-form #btn_delete").prop("disabled", false);
+
+				 	        // 画面の表示
+		                    $("#dialog-form #btn_delete").show();
+		                    $('#calendarModal').modal({backdrop:"static"});
+				       });
+	 	        },
+	 	        dayClick: function(date, jsEvent, view,resourceObj) {
+		 	           // カレンダー空白部分クリック時のイベント
+		 	           alert(resourceObj.id);
+						// 初期化
+		    			$("#dialog-form input#id").val("");
+		    			$("#dialog-form input#event_name").val("");
+		    			$("#dialog-form input#event_day_from").val("");
+		    			$("#dialog-form input#event_time_from").val("");
+		    			$("#dialog-form input#event_day_to").val("");
+		    			$("#dialog-form input#event_time_to").val("");
+		    			$("#dialog-form textarea#detail_naiyou").val("");
+		    			$("#dialog-form input#action_type").val("1"); // 新規
+		    			$("#dialog-form input#resourceId").val(resourceObj.id); // 班情報
+		    			
+		 	           // 画面の表示
+					   $("#dialog-form #btn_save").prop("disabled", false);
+	                   $("#dialog-form #btn_delete").hide();
+	                   $('#calendarModal').modal({backdrop:"static"});
+	 	        },
+	 	        select: function(start, end,jsEvent,view,resourceObj) {
+		 	           // カレンダー空白部分をドラッグして範囲指定した時のイベント
+					// 初期化
+	    			$("#dialog-form input#id").val("");
+	    			$("#dialog-form input#event_name").val("");
+	    			$("#dialog-form input#event_day_from").val(start.format("YYYY/MM/DD"));
+	    			$("#dialog-form input#event_time_from").val("");
+	    			// 月の場合、endが+1で表示されるので、-1を実施する。
+	    			if(view.type=="month"){
+		    			$("#dialog-form input#event_day_to").val(end.add('days', -1).format("YYYY/MM/DD"));
+	    			}
+	    			else{
+		    			$("#dialog-form input#event_day_to").val(end.format("YYYY/MM/DD"));
+	    			}
+	    			$("#dialog-form input#event_time_to").val("");
+	    			$("#dialog-form textarea#detail_naiyou").val("");
+	    			$("#dialog-form input#action_type").val("1"); // 新規
+	    			$("#dialog-form input#resourceId").val(resourceObj.id); // 班情報
+	    			
+	 	           // 画面の表示
+				   $("#dialog-form #btn_save").prop("disabled", false);
+	               $("#dialog-form #btn_delete").hide();
+	               $('#calendarModal').modal({backdrop:"static"});
+	 	        },
+	 	        eventDrop: function(event, delta, revertFunc, jsEvent, ui, view) {
+		 	           // イベントをドラッグして別日に移動させた時のイベント
+					// 入力情報の取得
+	    			var v_id=event.id;
+	    			var v_resourceId=event.resourceId;
+	    			var v_event_day_from=event.start.format("YYYY/MM/DD");
+	    			var v_event_day_to=event.end.format("YYYY/MM/DD");
+	    			var v_event_time_from=event.start.format("HH:mm");
+	    			var v_event_time_to=event.end.format("HH:mm");
+
+	    			// 送信データの設定
+					var v_data={'id':v_id,
+							    'resourceId':v_resourceId,
+							    'event_day_from':v_event_day_from,
+							    'event_day_to':v_event_day_to,
+							    'event_time_from':v_event_time_from,
+							    'event_time_to':v_event_time_to,
+							    };
+
+	    			// 入力情報の登録
+					$.ajax({
+						  type: "POST",
+		 				  url:'/drag2/changeDays',
+		 				  contentType: "application/json;charset=UTF-8",
+						  data:JSON.stringify(v_data),
+						  dataType: "json"
+					}).done(function (data) {
+							
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+						// エラーメッセージの取得
+						var v_message = "<div>" + jqXHR.responseText + "</div>";
+						// エラーメッセージの設定
+						$("#err_message_main").append(v_message);
+					});
+	 	        },
+	 	        eventResize: function(event, jsEvent, ui, view) {
+		 	           // イベントをリサイズして別日に移動させた時のイベント
+					// 入力情報の取得
+	    			var v_id=event.id;
+	    			var v_resourceId=event.resourceId;
+	    			var v_event_day_from=event.start.format("YYYY/MM/DD");
+	    			var v_event_day_to=event.end.format("YYYY/MM/DD");
+	    			var v_event_time_from=event.start.format("HH:mm");
+	    			var v_event_time_to=event.end.format("HH:mm");
+
+	    			// 送信データの設定
+					var v_data={'id':v_id,
+							    'resourceId':v_resourceId,
+							    'event_day_from':v_event_day_from,
+							    'event_day_to':v_event_day_to,
+							    'event_time_from':v_event_time_from,
+							    'event_time_to':v_event_time_to,
+							    };
+
+	    			// 入力情報の登録
+					$.ajax({
+						  type: "POST",
+		 				  url:'/drag2/changeDays',
+		 				  contentType: "application/json;charset=UTF-8",
+						  data:JSON.stringify(v_data),
+						  dataType: "json"
+					}).done(function (data) {
+							
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+						// エラーメッセージの取得
+						var v_message = "<div>" + jqXHR.responseText + "</div>";
+						// エラーメッセージの設定
+						$("#err_message_main").append(v_message);
+					});
+		 	    }
+    	      });
+    	    
+    	    // 保存ボタンを押した時のイベント
+			$( "#btn_save" ).click(function() {
+				// 二重送信制御
+				$("#dialog-form #btn_save").prop("disabled", true);
+				
+				// 入力情報の取得
+    			var v_action_type=$("#dialog-form input#action_type").val();
+    			var v_id=$("#dialog-form input#id").val();
+    			var v_resourceId=$("#dialog-form input#resourceId").val();
+    			var v_event_name=$("#dialog-form input#event_name").val();
+    			var v_event_day_from=$("#dialog-form input#event_day_from").val();
+    			var v_event_time_from=$("#dialog-form input#event_time_from").val();
+    			var v_event_day_to=$("#dialog-form input#event_day_to").val();
+    			var v_event_time_to=$("#dialog-form input#event_time_to").val();
+    			var v_detail_naiyou=$("#dialog-form textarea#detail_naiyou").val();
+    			
+    			// 送信データの設定
+				var v_data={'event_name':v_event_name,
+						    'event_day_from':v_event_day_from,
+						    'event_time_from':v_event_time_from,
+						    'event_day_to':v_event_day_to,
+						    'event_time_to':v_event_time_to,
+						    'detail_naiyou':v_detail_naiyou,
+						    'action_type':v_action_type,
+						    'id':v_id,
+						    'resourceId':v_resourceId,
+						    };
+
+    			// 入力情報の登録
+				$.ajax({
+					  type: "POST",
+	 				  url:'/drag2/regist',
+	 				  contentType: "application/json;charset=UTF-8",
+					  data:JSON.stringify(v_data),
+					  dataType: "json"
+				}).done(function (data) {
+					// カレンダーへの登録
+					if(v_action_type==1){
+						// 新規の場合
+						$("#calendar").fullCalendar("addEventSource", [{
+							  id:data.id,
+							  resourceId:data.resourceId,
+					          title: v_event_name,
+					          start: moment.utc(v_event_day_from + v_event_time_from, "YYYY/MM/DDhh:mm"),
+					          end: moment.utc(v_event_day_to + v_event_time_to, "YYYY/MM/DDhh:mm")
+						}]);				
+					}
+					else{
+						// 修正の場合
+						$("#calendar").fullCalendar("removeEvents",data.id);		
+						$("#calendar").fullCalendar("addEventSource", [{
+							  id:data.id,
+							  resourceId:data.resourceId,
+					          title: v_event_name,
+					          start: moment.utc(v_event_day_from + v_event_time_from, "YYYY/MM/DDhh:mm"),
+					          end: moment.utc(v_event_day_to + v_event_time_to, "YYYY/MM/DDhh:mm")
+						}]);				
+					}
+	 	             // 画面の非表示
+					$("#calendarModal").modal('hide');
+					
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					// エラーメッセージの取得
+					var v_message = "<div>" + jqXHR.responseText + "</div>";
+					// エラーメッセージの設定
+					$("#err_message").append(v_message);
+					
+					// 二重送信制御
+					$("#dialog-form #btn_save").prop("disabled", false);
+				});
+			});
+
+    	    // 削除ボタンを押した時のイベント
+			$( "#btn_delete" ).click(function() {
+				// 二重送信制御
+				$("#dialog-form #btn_delete").prop("disabled", true);
+				
+				// 入力情報の取得
+    			var v_id=$("#dialog-form input#id").val();
+    			var v_resourceId=$("#dialog-form input#resourceId").val();
+    			var v_event_name=$("#dialog-form input#event_name").val();
+    			var v_event_day_from=$("#dialog-form input#event_day_from").val();
+    			var v_event_time_from=$("#dialog-form input#event_time_from").val();
+    			var v_event_day_to=$("#dialog-form input#event_day_to").val();
+    			var v_event_time_to=$("#dialog-form input#event_time_to").val();
+    			var v_detail_naiyou=$("#dialog-form textarea#detail_naiyou").val();
+    			
+    			// 送信データの設定
+				var v_data={'event_name':v_event_name,
+						    'event_day_from':v_event_day_from,
+						    'event_time_from':v_event_time_from,
+						    'event_day_to':v_event_day_to,
+						    'event_time_to':v_event_time_to,
+						    'detail_naiyou':v_detail_naiyou,
+						    'id':v_id,
+						    'resourceId':v_resourceId,
+						    };
+
+    			// 入力情報の登録
+				$.ajax({
+					  type: "POST",
+	 				  url:'/drag2/delete',
+	 				  contentType: "application/json;charset=UTF-8",
+					  data:JSON.stringify(v_data),
+					  dataType: "json"
+				}).done(function (data) {
+					// カレンダーの削除
+					$("#calendar").fullCalendar("removeEvents",data.id);		
+	 	             // 画面の非表示
+					$("#calendarModal").modal('hide');
+					
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					// エラーメッセージの取得
+					var v_message = "<div>" + jqXHR.responseText + "</div>";
+					// エラーメッセージの設定
+					$("#err_message").append(v_message);
+					
+					// 二重送信制御
+					$("#dialog-form #btn_delete").prop("disabled", false);
+				});
+			});
+    	    
         });
     </script>
   </body>

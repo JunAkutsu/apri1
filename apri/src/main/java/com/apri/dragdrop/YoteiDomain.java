@@ -7,6 +7,7 @@ public class YoteiDomain {
 
 	private int action_type;
 	private Long id;
+	private Long resourceId;
 	private String event_name;
 	private LocalDateTime event_day_from;
 	private String event_time_from;
@@ -17,6 +18,13 @@ public class YoteiDomain {
 	private String event_day_from_s;
 	private String event_day_to_s;
 	
+	
+	public Long getResourceId() {
+		return resourceId;
+	}
+	public void setResourceId(Long resourceId) {
+		this.resourceId = resourceId;
+	}
 	public String getEvent_day_from_s() {
 		return event_day_from_s;
 	}

@@ -11,6 +11,7 @@ public class YoteiBean implements Serializable {
 	
 	int action_type;
 	Long id;
+	Long resourceId;
 	String event_name;
 	String event_day_from;
 	String event_time_from;
@@ -18,6 +19,13 @@ public class YoteiBean implements Serializable {
 	String event_time_to;
 	String detail_naiyou;
 	
+	
+	public Long getResourceId() {
+		return resourceId;
+	}
+	public void setResourceId(Long resourceId) {
+		this.resourceId = resourceId;
+	}
 	public int getAction_type() {
 		return action_type;
 	}

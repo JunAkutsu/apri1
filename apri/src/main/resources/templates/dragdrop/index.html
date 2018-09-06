@@ -189,9 +189,10 @@
     		          // 左側には「<、>、今日」のボタン
     		          // 中央には表示している月
     		          // 右側には月表示、週表示、日表示、月予定
-    		          left: 'prev,next today',
+    		          left: 'prev,today,next',
     		          center: 'title',
-    		          right: 'month,agendaWeek,agendaDay,listMonth'
+    		          right:'agendaWeek'
+//    		          right: 'month,agendaWeek,agendaDay,listMonth'
     		        },
 
    		        timeFormat: 'HH:mm', // 時間表示フォーマット
@@ -202,9 +203,14 @@
 	 	  		slotEventOverlap: true, // イベントの見た目を重ねて表示
 	 	  		selectable: true, // カレンダー空白部分のドラッグ可能
 	 	  		selectHelper: true, // これをtrueにすると範囲設定できます
-	 	  		slotLabelFormat:"HH:mm", // 日、週の左側のラベル表示
+	 	  		slotLabelFormat:" ", // 日、週の左側のラベル表示
 	 	  		nextDayThreshold:"00:00:00", // 次の日扱いにする時刻
 	 	  		selectMinDistance: 1,
+	 	  		defaultView: 'agendaWeek', // 初期View表示
+	 	        allDaySlot: false, // 終日スロット表示
+// 	 	        slotMinutes: 15, // スロットの分
+//	 	        snapMinutes: 15, // 選択する時間間隔
+
 	 	  		events: function(start, end, timezone, callback) {
 	 	           // ページロード時に表示するカレンダーデータ取得イベント
 				   // 取得データの設定
