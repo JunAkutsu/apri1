@@ -164,6 +164,27 @@
 		  <scope>provided</scope> 
 		</dependency> 
 		
+		<!-- Google APIを使用する場合、追加する　-->
+		<dependency>
+		    <groupId>com.google.api-client</groupId>
+		    <artifactId>google-api-client</artifactId>
+		    <version>1.25.0</version>
+		</dependency>
+
+		<!-- Google APIを使用する場合、追加する　-->
+		<dependency>
+		    <groupId>com.google.oauth-client</groupId>
+		    <artifactId>google-oauth-client-jetty</artifactId>
+		    <version>1.25.0</version>
+		</dependency>
+
+		<!-- Google APIを使用する場合、追加する　-->
+		<dependency>
+		    <groupId>com.google.apis</groupId>
+		    <artifactId>google-api-services-calendar</artifactId>
+		    <version>v3-rev341-1.25.0</version>
+		</dependency>
+		
 	</dependencies>
 	<build>
 		<!-- warファイル作成時のアプリ名 -->
