@@ -1,8 +1,11 @@
 package com.apri.xlsx3;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +44,7 @@ import com.orangesignal.csv.Csv;
 import com.orangesignal.csv.CsvConfig;
 import com.orangesignal.csv.handlers.CsvEntityListHandler;
 
+import java.lang.Math;
 
 //xlsxファイル出力(ひな形ファイル取り込ver2)
 
@@ -60,9 +64,8 @@ public class SelectContainerLogic {
 	}
 	
 	@RequestMapping(value="/downloadXLSX",method=RequestMethod.POST)
-    public ModelAndView downloadXLSX() {
+    public ModelAndView downloadXLSX() throws IOException {
 		
-		// DB検索
 		List<TantousyaDomain> list = tantousyaService.getTantousya_list();
 		List<String[]>xlsx_list = new ArrayList();
 		for(int i=0;i<list.size();i++){

@@ -48,6 +48,9 @@ public class RegistContainerLogic {
 	public ModelAndView commit(@ModelAttribute @Validated RegistForm form, BindingResult result,ModelAndView mav){
 		Logger logger = LoggerFactory.getLogger(RegistContainerLogic.class);
 		
+		System.out.println(form.getName());
+		System.out.println(form.getAge());
+		
 		if(result.hasErrors()){
 			logger.info("error="+result.toString());
 		}
